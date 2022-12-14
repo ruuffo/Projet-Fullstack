@@ -1,6 +1,8 @@
 from flask import Flask, request
 from flask_cors import CORS
 from jwt_utils import *
+from objects import *
+from db_utils import *
 
 app = Flask(__name__)
 CORS(app)
@@ -26,6 +28,29 @@ def Login():
 		return "Unauthorized", 401
 
 
+@app.route('/questions', methods=['POST'])
+def PostQuestion():
+	try:
+		# Récupérer le token envoyé en paramètre
+		authorization = request.headers.get('Authorization')
+		#print(authorization)
+
+		if (authorization == None):
+			return "Unauthorized", 401
+
+		# récupèrer un l'objet json envoyé dans le body de la requète
+		json = request.get_json()
+
+		question = Question(json.get("title"), json.get("text"), json.get("image"), json.get("position"))
+		print(question.title)
+		print(question.text)
+		print(question.image)
+		print(question.position)
+
+		PostQuestionSQL(question)
+		return "OK", 200
+	except Exception as e:
+		return "NOPE", 500
 
 if __name__ == "__main__":
     app.run()
