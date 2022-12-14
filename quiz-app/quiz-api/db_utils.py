@@ -17,19 +17,16 @@ def PostQuestionSQL(question: Question):
 
         # start transaction
         cur.execute("begin")
-        print("apres begin")
 
         # save the question to db
         data = map_question_to_request(question)
         insertion_result = cur.execute(
-            "insert into Question (Title,Text,Image,Quiz_position) values (?)", (data,))
-        print("apres execute")
+            "insert into Question (Title,Text,Image,Quiz_position) values (?,?,?,?)", data)
 
         # send the request
         cur.execute("commit")
-        print("apres commit")
 
     except Exception as e:
         # in case of exception, rollback the transaction
         cur.execute('rollback')
-        raise Exception("Failed to insert in DB. " + e)
+        raise Exception("Failed to insert in DB. " + str(e))
