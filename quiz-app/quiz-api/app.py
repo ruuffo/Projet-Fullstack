@@ -23,6 +23,7 @@ def Login():
 	payload = request.get_json()
 	if (payload.get("password") == "flask2023"):
 		token = build_token()
+		print(token)
 		return {"token":token}, 200
 	else:
 		return "Unauthorized", 401
@@ -32,11 +33,12 @@ def Login():
 def PostQuestion():
 	try:
 		# Récupérer le token envoyé en paramètre
-		authorization = request.headers.get('Authorization')
-		#print(authorization)
+		authorization = request.headers.get('Authorization').replace("Bearer ","")
+		print(authorization)
 
-		if (authorization == None):
-			return "Unauthorized", 401
+		#if (authorization == None):
+		decode_token(authorization)
+			#return "Unauthorized", 401
 
 		# récupèrer un l'objet json envoyé dans le body de la requète
 		json = request.get_json()
@@ -49,8 +51,11 @@ def PostQuestion():
 
 		PostQuestionSQL(question)
 		return "OK", 200
+	except JwtError as e: # token errors
+		return e.message, 401
 	except Exception as e:
 		return "NOPE", 500
+
 
 if __name__ == "__main__":
     app.run()
