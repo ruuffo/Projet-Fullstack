@@ -40,11 +40,23 @@ def PostQuestion():
 		# récupèrer un l'objet json envoyé dans le body de la requète
 		json = request.get_json()
 
+		possibleAnswers = json.get("possibleAnswers")
+		print("yolo")
+		answers = []
+		print("lolnope")
+		for answer in possibleAnswers :
+			answers.append(Answer(answer.get("text"), answer.get("isCorrect")))
+
 		# get question
-		question = Question(json.get("title"), json.get("text"), json.get("image"), json.get("position"))
+		question = Question(json.get("title"), json.get("text"), json.get("image"), json.get("position"), answers)
 
 		# register question in database
-		PostQuestionSQL(question)
+		id_q = PostQuestionSQL(question)
+
+		# register answers in database
+		for answer in question.answers:
+			PostAnswersSQL(answer, id_q)
+
 		return "OK", 200
 	except JwtError as e: # token errors
 		return e.message, 401
