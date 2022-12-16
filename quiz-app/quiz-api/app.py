@@ -40,6 +40,28 @@ def PostQuestion():
 		# Récupérer le token envoyé en paramètre
 		authorization = request.headers.get('Authorization').replace("Bearer ","")
 
+		decode_token(authorization)
+
+		# récupèrer un l'objet json envoyé dans le body de la requète
+		json = request.get_json()
+
+		possibleAnswers = json.get("possibleAnswers")
+		answers = []
+		for answer in possibleAnswers :
+			answers.append(Answer(answer.get("text"), answer.get("isCorrect")))
+
+		# get question
+		question = Question(json.get("title"), json.get("text"), json.get("image"), json.get("position"), answers)
+
+		# register question in database
+
+		# register answers in database
+		for answer in question.answers:
+
+	try:
+		# Récupérer le token envoyé en paramètre
+		authorization = request.headers.get('Authorization').replace("Bearer ","")
+
 		# Lire le token. Si invalide : JwtException
 		decode_token(authorization)
 
@@ -70,6 +92,19 @@ def PostQuestion():
 		return str(e), e.code
 	except Exception as e:
 		return "ERROR : " + str(e), e.args[0]
+
+@app.route('/questions/<int:question_id>', methods=['PUT'])
+def PutQuestion(question_id):
+		PutQuestionSQL(question, question_id)
+
+		#Delete outdated answers
+		RemoveAnswersSQL(question_id)
+			PostAnswersSQL(answer, question_id)
+		return {"id":id_q}, 200
+	except JwtError as e: # token errors
+		return e.message, 401
+	except Exception as e:
+		return "ERROR : " + str(e)
 
 @app.route('/questions/<int:question_id>', methods=['PUT'])
 def PutQuestion(question_id):
