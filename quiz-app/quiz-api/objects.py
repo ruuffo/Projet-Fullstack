@@ -1,6 +1,7 @@
 # Objets
 
 import array
+import json
 
 from custom_errors import CustomError
 
@@ -26,6 +27,9 @@ class Question():
         self.image = image
         self.position = position
         self.answers = answers
+
+    def __str__(self):
+        return json.dumps(self)
 
     def verifyCreate(self):
         missing_parameters = []

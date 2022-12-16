@@ -85,7 +85,7 @@ def PostAnswersSQL(answer: Answer, question_id: int):
         raise e
 
 
-def GetQuestionById(question_id: int):
+def GetQuestionByIdSQL(question_id: int):
     db_connection = start_connect()
     cur = db_connection.cursor()
     try:
@@ -93,14 +93,15 @@ def GetQuestionById(question_id: int):
         # start transaction
         cur.execute("begin")
 
-        cur.execute("SELECT * FROM Question WHERE id = ?", (question_id,))
-        results = cur.fetchone()
+        cur.execute("SELECT * FROM Question WHERE Id_Question = ?", (question_id,))
+        result = cur.fetchone()
 
-        if results == None:
-            raise CustomError(404, "There is no Question with id = "+question_id)
+        if result == None:
+            raise CustomError(404, "There is no Question with id = "+str(question_id))
 
         # send the request
         cur.close()
+        return result
 
     # exception si il nous manque des paramètres
     except CustomError as e:

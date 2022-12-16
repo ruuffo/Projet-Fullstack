@@ -103,8 +103,30 @@ def PutQuestion(question_id):
 		return "OK", 204
 	except JwtError as e: # token errors
 		return e.message, 401
+	except CustomError as e:
+		return e.message, e.code
 	except Exception as e:
-		return "ERROR : " + str(e)
+		return "ERROR : " + str(e), e.args[0]
+
+
+@app.route('/questions/<int:question_id>', methods=['GET'])
+def GetQuestion(question_id):
+	try:
+		# Récupérer le token envoyé en paramètre
+		authorization = request.headers.get('Authorization').replace("Bearer ", "")
+
+		decode_token(authorization)
+
+		# register question in database
+		question = GetQuestionByIdSQL(question_id)
+
+		return question, 204
+	except JwtError as e:  # token errors
+		return e.message, 401
+	except CustomError as e:
+		return e.message, e.code
+	except Exception as e:
+		return "ERROR : " + str(e), e.args[0]
 
 if __name__ == "__main__":
     app.run()
