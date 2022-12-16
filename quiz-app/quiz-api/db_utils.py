@@ -14,9 +14,6 @@ def PostQuestionSQL(question: Question):
     db_connection = start_connect()
     cur = db_connection.cursor()
 
-
-    print("lala\n")
-
     try:
 
         # start transaction
@@ -24,21 +21,12 @@ def PostQuestionSQL(question: Question):
 
             #QUESTION
         # save the question to db
-        missing_parameters = []
-        if question.text == None:
-            missing_parameters.append("text")
-        if question.title == None:
-            missing_parameters.append("title")
-        if question.position == None:
-            missing_parameters.append("position")
-        if question.image == None:
-            missing_parameters.append("image")
-        if len(missing_parameters) > 0:
-            raise CustomError(400,"Missing values for : "+ ''.join([str(a) + ", " for a in missing_parameters]))
+        question.verifyCreate()
 
         data = map_question_to_request(question)
         insertion_result = cur.execute(
             "insert into Question (Title,Text,Image,Quiz_position) values (?,?,?,?)", data)
+
         # send the request
         cur.execute("commit")
         cur.close()
@@ -47,6 +35,9 @@ def PostQuestionSQL(question: Question):
 
     # exception si il nous manque des paramètres
     except CustomError as e:
+        # in case of exception, rollback the transaction
+        cur.execute('rollback')
+        cur.close()
         raise e
 
     # exception si on essaie de mettre une position qui existe déja
@@ -55,6 +46,11 @@ def PostQuestionSQL(question: Question):
         cur.execute('rollback')
         cur.close()
         raise CustomError(400,"Cannot insert Question. The Question with position "+str(question.position)+" already exists.")
+
+    except Exception as e:
+        cur.execute('rollback')
+        cur.close()
+        raise e
 
 
 def PostAnswersSQL(answer: Answer, question_id: int):
@@ -66,14 +62,7 @@ def PostAnswersSQL(answer: Answer, question_id: int):
         # start transaction
         cur.execute("begin")
 
-        missing_parameters = []
-
-        if answer.text == None:
-            missing_parameters.append("text")
-        if answer.isCorrect == None:
-            missing_parameters.append("isCorrect")
-        if len(missing_parameters) > 0 :
-            raise CustomError(400,"Missing values for : "+ ''.join([str(a) + ", " for a in missing_parameters]))
+        answer.verifyCreate()
 
         data = map_answer_to_request(answer)
         insertion_result = cur.execute(
@@ -85,6 +74,11 @@ def PostAnswersSQL(answer: Answer, question_id: int):
 
     # exception si il nous manque des paramètres
     except CustomError as e:
+        cur.execute('rollback')
+        cur.close()
+        raise e
+
+    except Exception as e:
         cur.execute('rollback')
         cur.close()
         raise e

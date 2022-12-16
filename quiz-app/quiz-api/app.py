@@ -49,18 +49,19 @@ def PostQuestion():
 		possibleAnswers = json.get("possibleAnswers")
 
 		answers = []
-		for answer in possibleAnswers :
-			answers.append(Answer(answer.get("text"), answer.get("isCorrect")))
+		if possibleAnswers != None:
+			for answer in possibleAnswers:
+				answers.append(Answer(answer.get("text"), answer.get("isCorrect")))
 
 		# get question
 		question = Question(json.get("title"), json.get("text"), json.get("image"), json.get("position"), answers)
 
 		# register question in database
-		id_q = PostQuestionSQL(question)
+		id_question = PostQuestionSQL(question)
 
-		# register answers in database
+        # register answers in database
 		for answer in question.answers:
-			PostAnswersSQL(answer, id_q)
+			PostAnswersSQL(answer, id_question)
 
 		return "OK", 200
 	except JwtError as e: # token errors
@@ -68,7 +69,7 @@ def PostQuestion():
 	except CustomError as e:
 		return str(e), e.code
 	except Exception as e:
-		return "ERROR : " + str(e)
+		return "ERROR : " + str(e), e.args[0]
 
 
 if __name__ == "__main__":

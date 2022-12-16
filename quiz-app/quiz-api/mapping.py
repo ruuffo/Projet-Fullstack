@@ -6,7 +6,7 @@ def map_question_to_request(question: Question):
 
 
 def map_answer_to_request(answer: Answer):
-    return (answer.name, answer.isCorrect)
+    return (answer.text, answer.isCorrect)
 
 # def map_response_to_question(response):
 #     question = Question(response.)
