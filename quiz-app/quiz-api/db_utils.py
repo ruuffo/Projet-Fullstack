@@ -149,7 +149,6 @@ def PutQuestionSQL(question: Question, question_id: int):
     cur = db_connection.cursor()
 
     try:
-
         # start transaction
         cur.execute("begin")
 
@@ -159,13 +158,21 @@ def PutQuestionSQL(question: Question, question_id: int):
         cur.execute("UPDATE Question SET Title = ?, Text = ?, Image = ?, Quiz_position = ? WHERE Id_Question = ?", (data))
         # send the request
         cur.execute("commit")
+        results = cur.fetchone()
+
+        if results == None:
+            raise CustomError(404, "There is no Question with id = "+str(question_id))
+
         cur.close()
 
+    except CustomError as e:
+        cur.close()
+        raise e
     except Exception as e:
         # in case of exception, rollback the transaction
         cur.execute('rollback')
         cur.close()
-        raise Exception("Failed to update DB. " + str(e))
+        raise Exception("Failed to put new question in DB. " + str(e))
 
 
 def RemoveAnswersSQL(question_id: int):
