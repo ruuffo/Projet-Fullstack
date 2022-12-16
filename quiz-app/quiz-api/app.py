@@ -40,28 +40,6 @@ def PostQuestion():
 		# Récupérer le token envoyé en paramètre
 		authorization = request.headers.get('Authorization').replace("Bearer ","")
 
-		decode_token(authorization)
-
-		# récupèrer un l'objet json envoyé dans le body de la requète
-		json = request.get_json()
-
-		possibleAnswers = json.get("possibleAnswers")
-		answers = []
-		for answer in possibleAnswers :
-			answers.append(Answer(answer.get("text"), answer.get("isCorrect")))
-
-		# get question
-		question = Question(json.get("title"), json.get("text"), json.get("image"), json.get("position"), answers)
-
-		# register question in database
-
-		# register answers in database
-		for answer in question.answers:
-
-	try:
-		# Récupérer le token envoyé en paramètre
-		authorization = request.headers.get('Authorization').replace("Bearer ","")
-
 		# Lire le token. Si invalide : JwtException
 		decode_token(authorization)
 
@@ -85,7 +63,7 @@ def PostQuestion():
 		for answer in question.answers:
 			PostAnswersSQL(answer, id_question)
 
-		return {"id":id_q}, 200
+		return {"id":id_question}, 200
 	except JwtError as e: # token errors
 		return e.message, 401
 	except CustomError as e:
