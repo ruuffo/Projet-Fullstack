@@ -95,19 +95,6 @@ def PostQuestion():
 
 @app.route('/questions/<int:question_id>', methods=['PUT'])
 def PutQuestion(question_id):
-		PutQuestionSQL(question, question_id)
-
-		#Delete outdated answers
-		RemoveAnswersSQL(question_id)
-			PostAnswersSQL(answer, question_id)
-		return {"id":id_q}, 200
-	except JwtError as e: # token errors
-		return e.message, 401
-	except Exception as e:
-		return "ERROR : " + str(e)
-
-@app.route('/questions/<int:question_id>', methods=['PUT'])
-def PutQuestion(question_id):
 	try:
 		# Récupérer le token envoyé en paramètre
 		authorization = request.headers.get('Authorization').replace("Bearer ","")
