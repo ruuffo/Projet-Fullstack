@@ -10,6 +10,7 @@ def start_connect():
     return db_connection
 
 
+
 def PostQuestionSQL(question: Question):
     db_connection = start_connect()
     cur = db_connection.cursor()
@@ -24,7 +25,9 @@ def PostQuestionSQL(question: Question):
         question.verifyCreate()
 
         data = map_question_to_request(question)
-        cur.execute("insert into Question (Title,Text,Image,Quiz_position) values (?,?,?,?)", data)
+        insertion_result = cur.execute(
+            "insert into Question (Title,Text,Image,Quiz_position) values (?,?,?,?)", data)
+
         # send the request
         cur.execute("commit")
         cur.close()
@@ -63,7 +66,8 @@ def PostAnswersSQL(answer: Answer, question_id: int):
         answer.verifyCreate()
 
         data = map_answer_to_request(answer)
-        cur.execute("insert into Answer (Text,IsCorrect,Id_Question) values (?,?,?)", (data[0], data[1], question_id))
+        insertion_result = cur.execute(
+            "insert into Answer (Text,IsCorrect,Id_Question) values (?,?,?)", (data[0], data[1], question_id))
 
         # send the request
         cur.execute("commit")
@@ -78,7 +82,37 @@ def PostAnswersSQL(answer: Answer, question_id: int):
     except Exception as e:
         cur.execute('rollback')
         cur.close()
-        raise Exception("Failed to insert in DB. " + str(e))
+        raise e
+
+
+def GetQuestionById(question_id: int):
+    db_connection = start_connect()
+    cur = db_connection.cursor()
+    try:
+        cur = db_connection.cursor()
+        # start transaction
+        cur.execute("begin")
+
+        cur.execute("SELECT * FROM Question WHERE id = ?", (question_id,))
+        results = cur.fetchone()
+
+        if results == None:
+            raise CustomError(404, "There is no Question with id = "+question_id)
+
+        # send the request
+        cur.close()
+
+    # exception si il nous manque des paramètres
+    except CustomError as e:
+        cur.close()
+        raise e
+
+    except Exception as e:
+        cur.close()
+        raise e
+
+
+
 
 def PutQuestionSQL(question: Question, question_id: int):
     db_connection = start_connect()
