@@ -121,11 +121,7 @@ def GetQuestion(question_id):
 		answers = GetAnswersByQuestionIdSQL(question_id)
 		question.answers = answers
 
-		print(str(question))
-		my_json = str(question)
-		print("test")
-
-		return my_json, 204
+		return jsonify(question.toJSON()), 200
 	except JwtError as e:  # token errors
 		return e.message, 401
 	except CustomError as e:
