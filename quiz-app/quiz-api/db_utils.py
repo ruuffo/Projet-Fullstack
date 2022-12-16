@@ -93,15 +93,18 @@ def GetQuestionByIdSQL(question_id: int):
         # start transaction
         cur.execute("begin")
 
-        cur.execute("SELECT * FROM Question WHERE Id_Question = ?", (question_id,))
+        cur.execute("SELECT * FROM Question WHERE Quiz_position = ?", (question_id,))
         result = cur.fetchone()
+        print(result)
 
         if result == None:
             raise CustomError(404, "There is no Question with id = "+str(question_id))
 
+        question = Question.loadFromDB(result)
+
         # send the request
         cur.close()
-        return result
+        return question
 
     # exception si il nous manque des paramètres
     except CustomError as e:
@@ -113,6 +116,32 @@ def GetQuestionByIdSQL(question_id: int):
         raise e
 
 
+def GetAnswersByQuestionIdSQL(question_id: int):
+    db_connection = start_connect()
+    cur = db_connection.cursor()
+    try:
+        cur = db_connection.cursor()
+        # start transaction
+        cur.execute("begin")
+
+        cur.execute(
+            "SELECT * FROM Answer WHERE Id_Question = ?", (question_id,))
+        result = cur.fetchall()
+
+        answers = [Answer.loadFromDB(answer) for answer in result]
+
+        # send the request
+        cur.close()
+        return answers
+
+    # exception si il nous manque des paramètres
+    except CustomError as e:
+        cur.close()
+        raise e
+
+    except Exception as e:
+        cur.close()
+        raise e
 
 
 def PutQuestionSQL(question: Question, question_id: int):

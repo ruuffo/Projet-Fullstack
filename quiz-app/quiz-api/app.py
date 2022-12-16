@@ -51,10 +51,10 @@ def PostQuestion():
 		answers = []
 		if possibleAnswers != None:
 			for answer in possibleAnswers:
-				answers.append(Answer(answer.get("text"), answer.get("isCorrect")))
+				answers.append(Answer(None,answer.get("text"), answer.get("isCorrect")))
 
 		# get question
-		question = Question(json.get("title"), json.get("text"), json.get("image"), json.get("position"), answers)
+		question = Question(None, json.get("title"), json.get("text"), json.get("image"), json.get("position"), answers)
 
 		# register question in database
 		id_question = PostQuestionSQL(question)
@@ -85,10 +85,10 @@ def PutQuestion(question_id):
 		possibleAnswers = json.get("possibleAnswers")
 		answers = []
 		for answer in possibleAnswers :
-			answers.append(Answer(answer.get("text"), answer.get("isCorrect")))
+			answers.append(Answer(None, answer.get("text"), answer.get("isCorrect")))
 
 		# get question
-		question = Question(json.get("title"), json.get("text"), json.get("image"), json.get("position"), answers)
+		question = Question(None,json.get("title"), json.get("text"), json.get("image"), json.get("position"), answers)
 
 		# register question in database
 		PutQuestionSQL(question, question_id)
@@ -114,13 +114,18 @@ def GetQuestion(question_id):
 	try:
 		# Récupérer le token envoyé en paramètre
 		authorization = request.headers.get('Authorization').replace("Bearer ", "")
-
 		decode_token(authorization)
 
 		# register question in database
 		question = GetQuestionByIdSQL(question_id)
+		answers = GetAnswersByQuestionIdSQL(question_id)
+		question.answers = answers
 
-		return question, 204
+		print(str(question))
+		my_json = str(question)
+		print("test")
+
+		return my_json, 204
 	except JwtError as e:  # token errors
 		return e.message, 401
 	except CustomError as e:
