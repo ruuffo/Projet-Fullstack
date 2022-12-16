@@ -24,9 +24,7 @@ def PostQuestionSQL(question: Question):
         question.verifyCreate()
 
         data = map_question_to_request(question)
-        insertion_result = cur.execute(
-            "insert into Question (Title,Text,Image,Quiz_position) values (?,?,?,?)", data)
-
+        cur.execute("insert into Question (Title,Text,Image,Quiz_position) values (?,?,?,?)", data)
         # send the request
         cur.execute("commit")
         cur.close()
@@ -65,8 +63,7 @@ def PostAnswersSQL(answer: Answer, question_id: int):
         answer.verifyCreate()
 
         data = map_answer_to_request(answer)
-        insertion_result = cur.execute(
-            "insert into Answer (Text,IsCorrect,Id_Question) values (?,?,?)", (data[0], data[1], question_id))
+        cur.execute("insert into Answer (Text,IsCorrect,Id_Question) values (?,?,?)", (data[0], data[1], question_id))
 
         # send the request
         cur.execute("commit")
@@ -81,4 +78,48 @@ def PostAnswersSQL(answer: Answer, question_id: int):
     except Exception as e:
         cur.execute('rollback')
         cur.close()
-        raise e
+        raise Exception("Failed to insert in DB. " + str(e))
+
+def PutQuestionSQL(question: Question, question_id: int):
+    db_connection = start_connect()
+    cur = db_connection.cursor()
+
+    try:
+
+        # start transaction
+        cur.execute("begin")
+
+            #QUESTION
+        # save the question to db
+        data = map_question_to_request_with_id(question,question_id)
+        cur.execute("UPDATE Question SET Title = ?, Text = ?, Image = ?, Quiz_position = ? WHERE Id_Question = ?", (data))
+        # send the request
+        cur.execute("commit")
+        cur.close()
+
+    except Exception as e:
+        # in case of exception, rollback the transaction
+        cur.execute('rollback')
+        cur.close()
+        raise Exception("Failed to update DB. " + str(e))
+
+
+def RemoveAnswersSQL(question_id: int):
+    # ANSWERS
+    db_connection = start_connect()
+    cur = db_connection.cursor()
+    try:
+        cur = db_connection.cursor()
+        # start transaction
+        cur.execute("begin")
+
+        cur.execute("DELETE FROM answer WHERE Id_Question = ?",(question_id,))
+
+        # send the request
+        cur.execute("commit")
+        cur.close()
+    except Exception as e:
+        # in case of exception, rollback the transaction
+        cur.execute('rollback')
+        cur.close()
+        raise Exception("Failed to remove old answers in DB. " + str(e))
