@@ -1,8 +1,10 @@
+from sqlite3 import IntegrityError, OperationalError
 from flask import Flask, request
 from flask_cors import CORS
 from jwt_utils import *
 from objects import *
 from db_utils import *
+from custom_errors import *
 
 app = Flask(__name__)
 CORS(app)
@@ -20,13 +22,16 @@ def GetQuizInfo():
 
 @app.route('/login', methods=['POST'])
 def Login():
-	payload = request.get_json()
-	if (payload.get("password") == "flask2023"):
-		token = build_token()
-		print(token)
-		return {"token":token}, 200
-	else:
-		return "Unauthorized", 401
+	try:
+		payload = request.get_json()
+		password = payload.get("password")
+		if (password == "flask2023"):
+			token = build_token()
+			return {"token": token}, 200
+		else:
+			raise CustomError(401, "Unauthorized - wrong password used : " + password)
+	except CustomError as e:
+		return str(e), e.code
 
 
 @app.route('/questions', methods=['POST'])
@@ -35,15 +40,15 @@ def PostQuestion():
 		# Récupérer le token envoyé en paramètre
 		authorization = request.headers.get('Authorization').replace("Bearer ","")
 
+		# Lire le token. Si invalide : JwtException
 		decode_token(authorization)
 
 		# récupèrer un l'objet json envoyé dans le body de la requète
 		json = request.get_json()
 
 		possibleAnswers = json.get("possibleAnswers")
-		print("yolo")
+
 		answers = []
-		print("lolnope")
 		for answer in possibleAnswers :
 			answers.append(Answer(answer.get("text"), answer.get("isCorrect")))
 
@@ -60,6 +65,8 @@ def PostQuestion():
 		return "OK", 200
 	except JwtError as e: # token errors
 		return e.message, 401
+	except CustomError as e:
+		return str(e), e.code
 	except Exception as e:
 		return "ERROR : " + str(e)
 
