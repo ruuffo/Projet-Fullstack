@@ -1,6 +1,6 @@
 <template>
   <h1>Home page</h1>
-  {{ registeredScores }}
+  Resultats : {{ registeredScores }}
 </template>
 
 <script>
