@@ -18,7 +18,7 @@ class Answer():
         return {
             "id": self.id,
             "text": self.text,
-            "isCorrect": self.isCorrect,
+            "isCorrect": bool(self.isCorrect),
         }
 
     def __str__(self):
@@ -34,7 +34,7 @@ class Answer():
             raise CustomError(400, "Missing values for : " + ''.join([str(a) + ", " for a in missing_parameters]))
 
     def loadFromDB(dbResult : object):
-        return Answer(dbResult[0], dbResult[1], dbResult[2])
+        return Answer(dbResult[0], dbResult[2], dbResult[3])
 
 class Question():
     def __init__(self, id: int, title: str, text: str, image: str, position: int, answers: object):
@@ -52,7 +52,7 @@ class Question():
             "text":self.text,
             "image": self.image,
             "position": self.position,
-            "answers":[answer.toJSON() for answer in self.answers]
+            "possibleAnswers":[answer.toJSON() for answer in self.answers]
         }
 
     def __str__(self):

@@ -24,9 +24,9 @@ def GetQuizInfo():
 @app.route('/questions/<int:question_id>', methods=['GET'])
 def GetQuestionById(question_id):
 	try:
-		# Récupérer le token envoyé en paramètre
-		authorization = request.headers.get('Authorization')
-		decode_token(authorization)
+		# Récupérer le token envoyé en paramètre /////
+		#authorization = request.headers.get('Authorization')
+		#decode_token(authorization)
 
 		# get question in database
 		question = GetQuestionByIdSQL(question_id)
@@ -45,9 +45,9 @@ def GetQuestionById(question_id):
 @app.route('/questions', methods=['GET'])
 def GetQuestionByPosition():
 	try:
-		# Récupérer le token envoyé en paramètre
-		authorization = request.headers.get('Authorization')
-		decode_token(authorization)
+		# Récupérer le token envoyé en paramètre /////
+		#authorization = request.headers.get('Authorization')
+		#decode_token(authorization)
 
 		# get position
 		question_pos = request.args['position']
