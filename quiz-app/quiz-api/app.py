@@ -93,7 +93,7 @@ def RebuildDB():
 		return "ERROR : " + str(e), e.args[0]
 
 @app.route('/questions/<int:question_id>', methods=['PUT'])
-def PutQuestion(question_id):
+def UpdateQuestion(question_id):
 	try:
 		# Récupérer le token envoyé en paramètre
 		authorization = request.headers.get('Authorization')
