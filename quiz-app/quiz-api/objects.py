@@ -3,8 +3,6 @@
 import array
 import json
 
-from flask import jsonify
-
 from custom_errors import CustomError
 
 
@@ -20,9 +18,6 @@ class Answer():
             "text": self.text,
             "isCorrect": bool(self.isCorrect),
         }
-
-    def __str__(self):
-        return jsonify(self.toJSON())
 
     def verifyCreate(self):
         missing_parameters = []
@@ -54,9 +49,6 @@ class Question():
             "position": self.position,
             "possibleAnswers":[answer.toJSON() for answer in self.answers]
         }
-
-    def __str__(self):
-        return jsonify(self.toJSON())
 
     def verifyCreate(self):
         missing_parameters = []

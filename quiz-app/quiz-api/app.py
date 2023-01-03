@@ -33,7 +33,7 @@ def GetQuestionById(question_id):
 		answers = GetAnswersByQuestionIdSQL(question_id)
 		question.answers = answers
 
-		return jsonify(question.toJSON()), 200
+		return question.toJSON(), 200
 	except JwtError as e:  # token errors
 		return e.message, 401
 	except CustomError as e:
@@ -59,7 +59,7 @@ def GetQuestionByPosition():
 		answers = GetAnswersByQuestionIdSQL(question.id)
 		question.answers = answers
 
-		return jsonify(question.toJSON()), 200
+		return question.toJSON(), 200
 	except JwtError as e:  # token errors
 		return e.message, 401
 	except CustomError as e:
