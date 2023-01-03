@@ -259,7 +259,7 @@ def GetAnswersByQuestionIdSQL(question_id: int):
         raise e
 
 
-def PutQuestionSQL(question: Question, question_id: int):
+def UpdateQuestionSQL(question: Question, question_id: int):
     db_connection = start_connect()
     cur = db_connection.cursor()
 
