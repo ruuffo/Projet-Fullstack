@@ -1,6 +1,10 @@
 <template>
   <h1>Home page</h1>
   Resultats : {{ registeredScores }}
+  <div v-for="scoreEntry in registeredScores" v-bind:key="scoreEntry.date">
+    {{scoreEntry.Player_Name}} - {{scoreEntry.score}}
+  </div>
+  <router-link to="/start-new-quiz-page">Démarrer le quiz !</router-link>
 </template>
 
 <script>
@@ -19,3 +23,6 @@ export default {
   }
 };
 </script>
+
+<style>
+</style>
