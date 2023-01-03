@@ -16,7 +16,7 @@ class Answer():
 
     def toJSON(self):
         return {
-            # "id": self.id,
+            "id": self.id,
             "text": self.text,
             "isCorrect": self.isCorrect,
         }
@@ -47,7 +47,7 @@ class Question():
 
     def toJSON(self):
         return {
-            #"id": self.id,
+            "id": self.id,
             "title":self.title,
             "text":self.text,
             "image": self.image,

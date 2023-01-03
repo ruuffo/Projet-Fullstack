@@ -38,7 +38,10 @@ def Login():
 def PostQuestion():
 	try:
 		# Récupérer le token envoyé en paramètre
-		authorization = request.headers.get('Authorization').replace("Bearer ","")
+		authorization = request.headers.get('Authorization')
+		if (authorization == None): raise CustomError(401, "Missing Token")
+
+		authorization = authorization.replace("Bearer ","")
 
 		# Lire le token. Si invalide : JwtException
 		decode_token(authorization)
