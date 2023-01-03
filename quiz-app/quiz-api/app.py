@@ -18,7 +18,20 @@ def hello_world():
 
 @app.route('/quiz-info', methods=['GET'])
 def GetQuizInfo():
-	return {"size": 0, "scores": []}, 200
+    scores = []
+    participants = GetAllParticipationsSQL()
+    for p in participants:
+        score = 0
+        for pos in range(len(p.answers)):
+            question = GetQuestionByPositionSQL(pos)
+            trueAnswer = [answer for answer in question.answers if answer.isCorrect][0]
+
+            if trueAnswer.position == p.answers[pos]:
+                score += 10
+        scores.append(score)
+
+
+    return {"size": 0, "scores": []}, 200
 
 
 @app.route('/questions/<int:question_id>', methods=['GET'])
@@ -47,7 +60,7 @@ def GetQuestionByPosition():
 	try:
 		# Récupérer le token envoyé en paramètre /////
 		#authorization = request.headers.get('Authorization')
-		#decode_token(authorization)
+		# decode_token(authorization)
 
 		# get position
 		question_pos = request.args['position']
@@ -69,7 +82,8 @@ def GetQuestionByPosition():
 
 # endregion
 
-#region POST
+# region POST
+
 @app.route('/login', methods=['POST'])
 def Login():
 	try:
@@ -82,6 +96,32 @@ def Login():
 			raise CustomError(401, "Unauthorized - wrong password used : " + password)
 	except CustomError as e:
 		return str(e), e.code
+
+
+@app.route('/participations', methods=['POST'])
+def PostParticipation():
+	try:
+		# Récupérer le token envoyé en paramètre
+		authorization = request.headers.get('Authorization')
+
+		# Lire le token. Si invalide : JwtException
+		decode_token(authorization)
+
+		# récupèrer un l'objet json envoyé dans le body de la requète
+		json = request.get_json()
+
+		participation = Participation(None, json.get("playerName"), json.get("answers"))
+
+		# register participation in database
+		id_participation = PostParticipationSQL(participation)
+
+		return {"id": id_participation}, 200
+	except JwtError as e:  # token errors
+		return e.message, 401
+	except CustomError as e:
+		return str(e), e.code
+	except Exception as e:
+		return "ERROR : " + str(e), e.args[0]
 
 
 @app.route('/questions', methods=['POST'])
@@ -187,7 +227,6 @@ def UpdateQuestion(question_id):
 #endregion
 
 #region DELETE
-
 
 @app.route('/questions/<int:question_id>', methods=['DELETE'])
 def DeleteQuestion(question_id):

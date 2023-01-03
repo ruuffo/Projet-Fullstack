@@ -104,8 +104,8 @@ def CreateTableParticipationSQL():
             Create TABLE if not EXISTS Participation (
                 Id_Participation INTEGER PRIMARY KEY,
                 Player_Name varchar(50) not null,
-                Answers int not null,
-                FOREIGN KEY(Answers) REFERENCES Answer(Position)
+                Id_AnswerList int not null,
+                FOREIGN KEY(Id_AnswerList) REFERENCES AnswerList(Id_AnswerList)
             );
             """
         )
@@ -127,9 +127,48 @@ def CreateTableParticipationSQL():
         raise e
 
 
+def CreateTableAnswerListSQL():
+    db_connection = start_connect()
+    cur = db_connection.cursor()
+
+    try:
+
+        # start transaction
+        cur.execute("begin")
+
+        # create table AnswerList
+        cur.execute(
+            """
+            Create TABLE if not EXISTS AnswerList (
+                Id_AnswerList int,
+                Id_Answer int,
+                FOREIGN KEY(Id_Answer) REFERENCES Answer(Id_Answer)
+            );
+            """
+        )
+
+        # send the request
+        cur.execute("commit")
+        cur.close()
+
+    # exception si on arrive pas a créer
+    except sqlite3.IntegrityError as e:
+        # in case of exception, rollback the transaction
+        cur.execute('rollback')
+        cur.close()
+        raise CustomError(
+            500, "Cannot create table AnswerList : \n" + str(e))
+
+    except Exception as e:
+        cur.execute('rollback')
+        cur.close()
+        raise e
+
+
 def RebuildDBSQL():
     CreateTableQuestionSQL()
     CreateTableAnswerSQL()
+    CreateTableAnswerListSQL()
     CreateTableParticipationSQL()
 
 
@@ -176,6 +215,42 @@ def PostQuestionSQL(question: Question):
         raise e
 
 
+def PostParticipationSQL(participation: Participation):
+    db_connection = start_connect()
+    cur = db_connection.cursor()
+
+    try:
+
+        # start transaction
+        cur.execute("begin")
+
+            #QUESTION
+        # save the question to db
+        participation.verifyCreate()
+
+        data = map_participation_to_request(participation)
+        insertion_result = cur.execute(
+            "insert into Participation (Player_Name,Answers) values (?,?)", data)
+
+        # send the request
+        cur.execute("commit")
+        cur.close()
+
+        return cur.lastrowid
+
+    # exception si il nous manque des paramètres
+    except CustomError as e:
+        # in case of exception, rollback the transaction
+        cur.execute('rollback')
+        cur.close()
+        raise e
+
+    except Exception as e:
+        cur.execute('rollback')
+        cur.close()
+        raise e
+
+
 def PostAnswersSQL(answer: Answer, question_id: int):
     # ANSWERS
     db_connection = start_connect()
@@ -208,6 +283,43 @@ def PostAnswersSQL(answer: Answer, question_id: int):
 #endregion
 
 #region GET
+
+
+def GetAllParticipationsSQL():
+    db_connection = start_connect()
+    cur = db_connection.cursor()
+    try:
+        cur = db_connection.cursor()
+        # start transaction
+        cur.execute("begin")
+
+        cur.execute("SELECT * FROM Participation")
+
+        result = cur.fetchall()
+
+        if result == None:
+            result = []
+
+        allparticipations = []
+
+        for r in result :
+            participation = Participation.loadFromDB(r)
+            allparticipations.append(participation)
+
+        # send the request
+        cur.close()
+        return allparticipations
+
+    # exception si il nous manque des paramètres
+    except CustomError as e:
+        cur.close()
+        raise e
+
+    except Exception as e:
+        cur.close()
+        raise e
+
+
 def GetQuestionByIdSQL(question_id: int):
     db_connection = start_connect()
     cur = db_connection.cursor()
@@ -261,6 +373,37 @@ def GetQuestionByPositionSQL(question_pos: int):
         # send the request
         cur.close()
         return question
+
+    # exception si il nous manque des paramètres
+    except CustomError as e:
+        cur.close()
+        raise e
+
+    except Exception as e:
+        cur.close()
+        raise e
+
+
+def GetAnswerByIdSQL(answer_id: int):
+    db_connection = start_connect()
+    cur = db_connection.cursor()
+    try:
+        cur = db_connection.cursor()
+        # start transaction
+        cur.execute("begin")
+
+        cur.execute("SELECT * FROM Answer WHERE Id_Answer = ?", (answer_id,))
+        result = cur.fetchone()
+        print(result)
+
+        if result == None:
+            raise CustomError(404, "There is no Answer with id = "+str(answer_id))
+
+        answer = Answer.loadFromDB(result)
+
+        # send the request
+        cur.close()
+        return answer
 
     # exception si il nous manque des paramètres
     except CustomError as e:

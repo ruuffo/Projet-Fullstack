@@ -67,3 +67,30 @@ class Question():
 
     def loadFromDB(dbResult: object):
         return Question(dbResult[0], dbResult[1], dbResult[2], dbResult[3], dbResult[4], None)
+
+
+class Participation() :
+    def __init__(self, id: int, playerName: str, answers: object):
+        self.id = id
+        self.playerName = playerName
+        self.answers = answers
+
+    def toJSON(self):
+        return {
+            "id": self.id,
+            "playerName": self.playerName,
+            "answers": [{"position": answer} for answer in self.answers]
+        }
+
+    def verifyCreate(self):
+        missing_parameters = []
+        if self.playerName == None:
+            missing_parameters.append("playerName")
+        if self.answers == None:
+            missing_parameters.append("answers")
+        if len(missing_parameters) > 0:
+            raise CustomError(400,"Missing values for : "+ ''.join([str(a) + ", " for a in missing_parameters]))
+
+
+    def loadFromDB(dbResult: object):
+        return Participation(dbResult[0], dbResult[1], dbResult[2])
