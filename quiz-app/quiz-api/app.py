@@ -131,15 +131,40 @@ def PutQuestion(question_id):
 
 
 @app.route('/questions/<int:question_id>', methods=['GET'])
-def GetQuestion(question_id):
+def GetQuestionById(question_id):
 	try:
 		# Récupérer le token envoyé en paramètre
 		authorization = request.headers.get('Authorization')
 		decode_token(authorization)
 
-		# register question in database
+		# get question in database
 		question = GetQuestionByIdSQL(question_id)
 		answers = GetAnswersByQuestionIdSQL(question_id)
+		question.answers = answers
+
+		return jsonify(question.toJSON()), 200
+	except JwtError as e:  # token errors
+		return e.message, 401
+	except CustomError as e:
+		return e.message, e.code
+	except Exception as e:
+		return "ERROR : " + str(e), e.args[0]
+
+
+@app.route('/questions', methods=['GET'])
+def GetQuestionByPosition():
+	try:
+		# Récupérer le token envoyé en paramètre
+		authorization = request.headers.get('Authorization')
+		decode_token(authorization)
+
+		# get position
+		question_pos = request.args['position']
+		if(question_pos == None): raise CustomError(404, "Missing position")
+
+		# get question in database
+		question = GetQuestionByPositionSQL(question_pos)
+		answers = GetAnswersByQuestionIdSQL(question.id)
 		question.answers = answers
 
 		return jsonify(question.toJSON()), 200
