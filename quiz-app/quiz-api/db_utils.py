@@ -9,7 +9,7 @@ def start_connect():
     db_connection.isolation_level = None
     return db_connection
 
-
+#region POST
 def CreateTableQuestionSQL():
     db_connection = start_connect()
     cur = db_connection.cursor()
@@ -165,8 +165,9 @@ def PostAnswersSQL(answer: Answer, question_id: int):
         cur.execute('rollback')
         cur.close()
         raise e
+#endregion
 
-
+#region GET
 def GetQuestionByIdSQL(question_id: int):
     db_connection = start_connect()
     cur = db_connection.cursor()
@@ -257,9 +258,10 @@ def GetAnswersByQuestionIdSQL(question_id: int):
     except Exception as e:
         cur.close()
         raise e
+#endregion
 
-
-def UpdateQuestionSQL(question: Question, question_id: int):
+#region PUT
+def PutQuestionSQL(question: Question, question_id: int):
     db_connection = start_connect()
     cur = db_connection.cursor()
 
@@ -284,9 +286,34 @@ def UpdateQuestionSQL(question: Question, question_id: int):
         cur.execute('rollback')
         cur.close()
         raise Exception("Failed to put new question in DB. " + str(e))
+#endregion
+
+#region DELETE
+def DeleteQuestionSQL(question_id: int):
+    db_connection = start_connect()
+    cur = db_connection.cursor()
+
+    try:
+        # start transaction
+        cur.execute("begin")
+
+            #QUESTION
+        # delete the question from db
+        cur.execute("DELETE FROM Question WHERE Id_Question = ?", (question_id,))
+
+        # send the request
+        cur.execute("commit")
+
+        cur.close()
+
+    except Exception as e:
+        # in case of exception, rollback the transaction
+        cur.execute('rollback')
+        cur.close()
+        raise Exception("Failed to remove question with id: "+ str(question_id) +" from DB.\n" + str(e))
 
 
-def RemoveAnswersSQL(question_id: int):
+def DeleteAnswersSQL(question_id: int):
     # ANSWERS
     db_connection = start_connect()
     cur = db_connection.cursor()
@@ -295,7 +322,7 @@ def RemoveAnswersSQL(question_id: int):
         # start transaction
         cur.execute("begin")
 
-        cur.execute("DELETE FROM answer WHERE Id_Question = ?",(question_id,))
+        cur.execute("DELETE FROM Answer WHERE Id_Question = ?",(question_id,))
 
         # send the request
         cur.execute("commit")
@@ -304,4 +331,5 @@ def RemoveAnswersSQL(question_id: int):
         # in case of exception, rollback the transaction
         cur.execute('rollback')
         cur.close()
-        raise Exception("Failed to remove old answers in DB. " + str(e))
+        raise Exception("Failed to remove old answers to question with id: "+str(question_id)+" from DB. " + str(e))
+#endregion

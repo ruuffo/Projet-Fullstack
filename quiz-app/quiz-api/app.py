@@ -165,10 +165,10 @@ def UpdateQuestion(question_id):
 		question = Question(None,json.get("title"), json.get("text"), json.get("image"), json.get("position"), answers)
 
 		# register question in database
-		UpdateQuestionSQL(question, question_id)
+		PutQuestionSQL(question, question_id)
 
 		#Delete outdated answers
-		RemoveAnswersSQL(question_id)
+		DeleteAnswersSQL(question_id)
 
 		# register answers in database
 		for answer in question.answers:
@@ -176,6 +176,29 @@ def UpdateQuestion(question_id):
 
 		return "OK", 204
 	except JwtError as e: # token errors
+		return e.message, 401
+	except CustomError as e:
+		return e.message, e.code
+	except Exception as e:
+		return "ERROR : " + str(e), e.args[0]
+#endregion
+
+#region DELETE
+@app.route('/questions/<int:question_id>', methods=['DELETE'])
+def DeleteQuestion(question_id):
+	try:
+		# Récupérer le token envoyé en paramètre
+		authorization = request.headers.get('Authorization')
+		decode_token(authorization)
+
+		# register question in database
+		DeleteQuestionSQL(question_id)
+
+		# Delete outdated answers
+		AnswersSQL(question_id)
+
+		return "OK", 204
+	except JwtError as e:  # token errors
 		return e.message, 401
 	except CustomError as e:
 		return e.message, e.code
