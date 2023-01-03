@@ -273,10 +273,6 @@ def UpdateQuestionSQL(question: Question, question_id: int):
         cur.execute("UPDATE Question SET Title = ?, Text = ?, Image = ?, Quiz_position = ? WHERE Id_Question = ?", (data))
         # send the request
         cur.execute("commit")
-        results = cur.fetchone()
-
-        if results == None:
-            raise CustomError(404, "There is no Question with id = "+str(question_id))
 
         cur.close()
 
