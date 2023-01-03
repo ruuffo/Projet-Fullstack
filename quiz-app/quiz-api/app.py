@@ -184,6 +184,8 @@ def UpdateQuestion(question_id):
 #endregion
 
 #region DELETE
+
+
 @app.route('/questions/<int:question_id>', methods=['DELETE'])
 def DeleteQuestion(question_id):
 	try:
@@ -192,10 +194,9 @@ def DeleteQuestion(question_id):
 		decode_token(authorization)
 
 		# register question in database
-		DeleteQuestionSQL(question_id)
-
-		# Delete outdated answers
-		AnswersSQL(question_id)
+		count = DeleteQuestionSQL(question_id)
+		if (count == 0):
+			raise CustomError(404, "No question with id : "+str(question_id))
 
 		return "OK", 204
 	except JwtError as e:  # token errors
@@ -204,6 +205,28 @@ def DeleteQuestion(question_id):
 		return e.message, e.code
 	except Exception as e:
 		return "ERROR : " + str(e), e.args[0]
+
+
+@app.route('/questions/all', methods=['DELETE'])
+def DeleteAllQuestions():
+	try:
+		# Récupérer le token envoyé en paramètre
+		authorization = request.headers.get('Authorization')
+		decode_token(authorization)
+
+		# register question in database
+		DeleteAllQuestionsSQL()
+
+		# Delete outdated answers
+		#DeleteAnswersSQL(question_id)
+
+		return "OK", 204
+	except JwtError as e:  # token errors
+		return e.message, 401
+	except CustomError as e:
+		return e.message, e.code
+	except Exception as e:
+		return "ERROR : " + str(e), 400#e.args[0]
 #endregion
 
 if __name__ == "__main__":

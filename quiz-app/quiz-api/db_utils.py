@@ -66,7 +66,7 @@ def CreateTableAnswerSQL():
                 Id_Question int not null,
                 Text varchar(50) not null,
                 IsCorrect BOOLEAN not null check(IsCorrect in (0,1)),
-                FOREIGN KEY(Id_Question) REFERENCES Question(Id_Question)
+                FOREIGN KEY(Id_Question) REFERENCES Question(Id_Question) ON DELETE CASCADE ON UPDATE CASCADE
             );
             """
         )
@@ -264,6 +264,7 @@ def GetAnswersByQuestionIdSQL(question_id: int):
 def PutQuestionSQL(question: Question, question_id: int):
     db_connection = start_connect()
     cur = db_connection.cursor()
+    cur.execute("PRAGMA foreign_keys = ON")
 
     try:
         # start transaction
@@ -292,6 +293,7 @@ def PutQuestionSQL(question: Question, question_id: int):
 def DeleteQuestionSQL(question_id: int):
     db_connection = start_connect()
     cur = db_connection.cursor()
+    cur.execute("PRAGMA foreign_keys = ON")
 
     try:
         # start transaction
@@ -299,7 +301,35 @@ def DeleteQuestionSQL(question_id: int):
 
             #QUESTION
         # delete the question from db
-        cur.execute("DELETE FROM Question WHERE Id_Question = ?", (question_id,))
+        deleteStatement = cur.execute("DELETE FROM Question WHERE Id_Question = ?", (question_id,))
+        count = deleteStatement.rowcount
+
+        # send the request
+        cur.execute("commit")
+
+        cur.close()
+
+        return count
+
+    except Exception as e:
+        # in case of exception, rollback the transaction
+        cur.execute('rollback')
+        cur.close()
+        raise Exception("Failed to remove question with id: "+ str(question_id) +" from DB.\n" + str(e))
+
+
+def DeleteAllQuestionsSQL():
+    db_connection = start_connect()
+    cur = db_connection.cursor()
+    cur.execute("PRAGMA foreign_keys = ON")
+
+    try:
+        # start transaction
+        cur.execute("begin")
+
+        # QUESTION
+        # delete the question from db
+        cur.execute("DELETE FROM Question")
 
         # send the request
         cur.execute("commit")
@@ -310,7 +340,7 @@ def DeleteQuestionSQL(question_id: int):
         # in case of exception, rollback the transaction
         cur.execute('rollback')
         cur.close()
-        raise Exception("Failed to remove question with id: "+ str(question_id) +" from DB.\n" + str(e))
+        raise Exception("Failed to remove questions from DB.\n" + str(e))
 
 
 def DeleteAnswersSQL(question_id: int):
