@@ -10,6 +10,88 @@ def start_connect():
     return db_connection
 
 
+def CreateTableQuestionSQL():
+    db_connection = start_connect()
+    cur = db_connection.cursor()
+
+    try:
+
+        # start transaction
+        cur.execute("begin")
+
+        # create table Question
+        cur.execute(
+            """
+            CREATE TABLE IF NOT EXISTS Question(
+                Id_Question INTEGER PRIMARY KEY,
+                Title varchar(50) not null,
+                Text varchar(50) not null,
+                Image varchar(100) not null,
+                Quiz_Position int not null
+            );
+            """
+        )
+
+        # send the request
+        cur.execute("commit")
+        cur.close()
+
+    # exception si on arrive pas a créer
+    except sqlite3.IntegrityError as e:
+        # in case of exception, rollback the transaction
+        cur.execute('rollback')
+        cur.close()
+        raise CustomError(500, "Cannot create table Question : \n" + str(e))
+
+    except Exception as e:
+        cur.execute('rollback')
+        cur.close()
+        raise e
+
+
+def CreateTableAnswerSQL():
+    db_connection = start_connect()
+    cur = db_connection.cursor()
+
+    try:
+
+        # start transaction
+        cur.execute("begin")
+
+        # create table Answer
+        cur.execute(
+            """
+            Create TABLE if not EXISTS Answer (
+                Id_Answer INTEGER PRIMARY KEY,
+                Id_Question int not null,
+                Text varchar(50) not null,
+                IsCorrect BOOLEAN not null check(IsCorrect in (0,1)),
+                FOREIGN KEY(Id_Question) REFERENCES Question(Id_Question)
+            );
+            """
+        )
+
+        # send the request
+        cur.execute("commit")
+        cur.close()
+
+    # exception si on arrive pas a créer
+    except sqlite3.IntegrityError as e:
+        # in case of exception, rollback the transaction
+        cur.execute('rollback')
+        cur.close()
+        raise CustomError(500, "Cannot create table Answer : \n" + str(e))
+
+    except Exception as e:
+        cur.execute('rollback')
+        cur.close()
+        raise e
+
+
+def RebuildDBSQL():
+    CreateTableQuestionSQL()
+    CreateTableAnswerSQL()
+
 
 def PostQuestionSQL(question: Question):
     db_connection = start_connect()

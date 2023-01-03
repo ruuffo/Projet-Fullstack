@@ -71,6 +71,27 @@ def PostQuestion():
 	except Exception as e:
 		return "ERROR : " + str(e), e.args[0]
 
+
+@app.route('/rebuild-db', methods=['POST'])
+def RebuildDB():
+	try:
+		# Récupérer le token envoyé en paramètre
+		authorization = request.headers.get('Authorization').replace("Bearer ", "")
+
+		# Lire le token. Si invalide : JwtException
+		decode_token(authorization)
+
+		# execute le script pour rebuild la DB
+		RebuildDBSQL()
+
+		return "Ok", 200
+	except JwtError as e:  # token errors
+		return e.message, 401
+	except CustomError as e:
+		return str(e), e.code
+	except Exception as e:
+		return "ERROR : " + str(e), e.args[0]
+
 @app.route('/questions/<int:question_id>', methods=['PUT'])
 def PutQuestion(question_id):
 	try:
