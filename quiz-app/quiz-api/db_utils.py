@@ -273,7 +273,12 @@ def PutQuestionSQL(question: Question, question_id: int):
             #QUESTION
         # save the question to db
         data = map_question_to_request_with_id(question,question_id)
-        cur.execute("UPDATE Question SET Title = ?, Text = ?, Image = ?, Quiz_position = ? WHERE Id_Question = ?", (data))
+        statement = cur.execute("UPDATE Question SET Title = ?, Text = ?, Image = ?, Quiz_position = ? WHERE Id_Question = ?", (data))
+
+        if statement.rowcount == 0:
+            raise CustomError(
+                404, "There is no Question with position = "+str(question_id))
+
         # send the request
         cur.execute("commit")
 
