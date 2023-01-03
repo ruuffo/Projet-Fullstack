@@ -104,8 +104,8 @@ def CreateTableParticipationSQL():
             Create TABLE if not EXISTS Participation (
                 Id_Participation INTEGER PRIMARY KEY,
                 Player_Name varchar(50) not null,
-                FOREIGN KEY(Answers) REFERENCES Answer(Position),
-                FOREIGN KEY(Id_Question) REFERENCES Question(Id_Question) ON DELETE CASCADE ON UPDATE CASCADE
+                Answers int not null,
+                FOREIGN KEY(Answers) REFERENCES Answer(Position)
             );
             """
         )
@@ -119,7 +119,7 @@ def CreateTableParticipationSQL():
         # in case of exception, rollback the transaction
         cur.execute('rollback')
         cur.close()
-        raise CustomError(500, "Cannot create table Answer : \n" + str(e))
+        raise CustomError(500, "Cannot create table Participation : \n" + str(e))
 
     except Exception as e:
         cur.execute('rollback')
@@ -130,6 +130,7 @@ def CreateTableParticipationSQL():
 def RebuildDBSQL():
     CreateTableQuestionSQL()
     CreateTableAnswerSQL()
+    CreateTableParticipationSQL()
 
 
 def PostQuestionSQL(question: Question):
