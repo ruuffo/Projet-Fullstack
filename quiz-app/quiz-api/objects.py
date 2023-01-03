@@ -11,12 +11,14 @@ class Answer():
         self.id = id
         self.text = text
         self.isCorrect = isCorrect
+        self.position = None
 
     def toJSON(self):
         return {
             "id": self.id,
             "text": self.text,
             "isCorrect": bool(self.isCorrect),
+            "position": self.position
         }
 
     def verifyCreate(self):
@@ -29,7 +31,7 @@ class Answer():
             raise CustomError(400, "Missing values for : " + ''.join([str(a) + ", " for a in missing_parameters]))
 
     def loadFromDB(dbResult : object):
-        return Answer(dbResult[0], dbResult[2], dbResult[3])
+        return Answer(dbResult[0], dbResult[2], dbResult[3], dbResult[4])
 
 class Question():
     def __init__(self, id: int, title: str, text: str, image: str, position: int, answers: object):

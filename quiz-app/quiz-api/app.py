@@ -110,7 +110,10 @@ def PostQuestion():
 		id_question = PostQuestionSQL(question)
 
         # register answers in database
+		i = 0
 		for answer in question.answers:
+			answer.position = i
+			i += 1
 			PostAnswersSQL(answer, id_question)
 
 		return {"id":id_question}, 200

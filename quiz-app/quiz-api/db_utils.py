@@ -66,6 +66,45 @@ def CreateTableAnswerSQL():
                 Id_Question int not null,
                 Text varchar(50) not null,
                 IsCorrect BOOLEAN not null check(IsCorrect in (0,1)),
+                Position int not null,
+                FOREIGN KEY(Id_Question) REFERENCES Question(Id_Question) ON DELETE CASCADE ON UPDATE CASCADE
+            );
+            """
+        )
+
+        # send the request
+        cur.execute("commit")
+        cur.close()
+
+    # exception si on arrive pas a créer
+    except sqlite3.IntegrityError as e:
+        # in case of exception, rollback the transaction
+        cur.execute('rollback')
+        cur.close()
+        raise CustomError(500, "Cannot create table Answer : \n" + str(e))
+
+    except Exception as e:
+        cur.execute('rollback')
+        cur.close()
+        raise e
+
+
+def CreateTableParticipationSQL():
+    db_connection = start_connect()
+    cur = db_connection.cursor()
+
+    try:
+
+        # start transaction
+        cur.execute("begin")
+
+        # create table Answer
+        cur.execute(
+            """
+            Create TABLE if not EXISTS Participation (
+                Id_Participation INTEGER PRIMARY KEY,
+                Player_Name varchar(50) not null,
+                FOREIGN KEY(Answers) REFERENCES Answer(Position),
                 FOREIGN KEY(Id_Question) REFERENCES Question(Id_Question) ON DELETE CASCADE ON UPDATE CASCADE
             );
             """
@@ -149,7 +188,7 @@ def PostAnswersSQL(answer: Answer, question_id: int):
 
         data = map_answer_to_request(answer)
         insertion_result = cur.execute(
-            "insert into Answer (Text,IsCorrect,Id_Question) values (?,?,?)", (data[0], data[1], question_id))
+            "insert into Answer (Text,IsCorrect,Position,Id_Question) values (?,?,?,?)", (data[0], data[1], data[2], question_id))
 
         # send the request
         cur.execute("commit")
