@@ -39,9 +39,6 @@ def PostQuestion():
 	try:
 		# Récupérer le token envoyé en paramètre
 		authorization = request.headers.get('Authorization')
-		if (authorization == None): raise CustomError(401, "Missing Token")
-
-		authorization = authorization.replace("Bearer ","")
 
 		# Lire le token. Si invalide : JwtException
 		decode_token(authorization)
@@ -79,7 +76,7 @@ def PostQuestion():
 def RebuildDB():
 	try:
 		# Récupérer le token envoyé en paramètre
-		authorization = request.headers.get('Authorization').replace("Bearer ", "")
+		authorization = request.headers.get('Authorization')
 
 		# Lire le token. Si invalide : JwtException
 		decode_token(authorization)
@@ -99,7 +96,7 @@ def RebuildDB():
 def PutQuestion(question_id):
 	try:
 		# Récupérer le token envoyé en paramètre
-		authorization = request.headers.get('Authorization').replace("Bearer ","")
+		authorization = request.headers.get('Authorization')
 
 		decode_token(authorization)
 
@@ -137,7 +134,7 @@ def PutQuestion(question_id):
 def GetQuestion(question_id):
 	try:
 		# Récupérer le token envoyé en paramètre
-		authorization = request.headers.get('Authorization').replace("Bearer ", "")
+		authorization = request.headers.get('Authorization')
 		decode_token(authorization)
 
 		# register question in database

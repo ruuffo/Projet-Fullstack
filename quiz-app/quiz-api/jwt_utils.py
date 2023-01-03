@@ -1,10 +1,11 @@
 import jwt
 import datetime
+from custom_errors import *
 from werkzeug.exceptions import Unauthorized
 
 
 class JwtError(Exception):
-    """Exception raised for jwt errors in the quiz app 
+    """Exception raised for jwt errors in the quiz app
     """
 
     def __init__(self, message="Jwt error"):
@@ -42,9 +43,15 @@ def decode_token(auth_token):
     :return: integer|string
     """
     try:
-        payload = jwt.decode(auth_token, secret, algorithms="HS256")
+        if (auth_token == None): raise CustomError(401, "Missing Token")
+
+        authorization = auth_token.replace("Bearer ", "")
+
+        payload = jwt.decode(authorization, secret, algorithms="HS256")
         # if decoding did not fail, this means we are correctly logged in
         return payload['sub']
+    except CustomError as e:
+        raise e
     except jwt.ExpiredSignatureError:
         raise JwtError('Signature expired. Please log in again.')
     except jwt.InvalidTokenError as e:
