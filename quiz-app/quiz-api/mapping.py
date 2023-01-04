@@ -13,7 +13,7 @@ def map_answer_to_request(answer: Answer):
 
 
 def map_participation_to_request(participation: Participation):
-    return (participation.playerName, participation.answers)
+    return (participation.playerName, participation.score)
 
 # def map_response_to_question(response):
 #     question = Question(response.)

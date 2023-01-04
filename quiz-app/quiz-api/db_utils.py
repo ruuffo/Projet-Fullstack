@@ -104,8 +104,7 @@ def CreateTableParticipationSQL():
             Create TABLE if not EXISTS Participation (
                 Id_Participation INTEGER PRIMARY KEY,
                 Player_Name varchar(50) not null,
-                Id_AnswerList int not null,
-                FOREIGN KEY(Id_AnswerList) REFERENCES AnswerList(Id_AnswerList)
+                Score int not null
             );
             """
         )
@@ -126,49 +125,9 @@ def CreateTableParticipationSQL():
         cur.close()
         raise e
 
-
-def CreateTableAnswerListSQL():
-    db_connection = start_connect()
-    cur = db_connection.cursor()
-
-    try:
-
-        # start transaction
-        cur.execute("begin")
-
-        # create table AnswerList
-        cur.execute(
-            """
-            Create TABLE if not EXISTS AnswerList (
-                Id_AnswerList int,
-                Id_Answer int,
-                FOREIGN KEY(Id_Answer) REFERENCES Answer(Id_Answer)
-            );
-            """
-        )
-
-        # send the request
-        cur.execute("commit")
-        cur.close()
-
-    # exception si on arrive pas a créer
-    except sqlite3.IntegrityError as e:
-        # in case of exception, rollback the transaction
-        cur.execute('rollback')
-        cur.close()
-        raise CustomError(
-            500, "Cannot create table AnswerList : \n" + str(e))
-
-    except Exception as e:
-        cur.execute('rollback')
-        cur.close()
-        raise e
-
-
 def RebuildDBSQL():
     CreateTableQuestionSQL()
     CreateTableAnswerSQL()
-    CreateTableAnswerListSQL()
     CreateTableParticipationSQL()
 
 
@@ -216,6 +175,9 @@ def PostQuestionSQL(question: Question):
 
 
 def PostParticipationSQL(participation: Participation):
+
+
+
     db_connection = start_connect()
     cur = db_connection.cursor()
 
@@ -230,7 +192,7 @@ def PostParticipationSQL(participation: Participation):
 
         data = map_participation_to_request(participation)
         insertion_result = cur.execute(
-            "insert into Participation (Player_Name,Answers) values (?,?)", data)
+            "insert into Participation (Player_Name,Score) values (?,?)", data)
 
         # send the request
         cur.execute("commit")
@@ -264,7 +226,7 @@ def PostAnswersSQL(answer: Answer, question_id: int):
 
         data = map_answer_to_request(answer)
         insertion_result = cur.execute(
-            "insert into Answer (Text,IsCorrect,Position,Id_Question) values (?,?,?,?)", (data[0], data[1], data[2], question_id))
+            "insert into Answer (Text,IsCorrect, Position, Id_Question) values (?,?,?,?)", (data[0], data[1], data[2], question_id))
 
         # send the request
         cur.execute("commit")
@@ -351,6 +313,32 @@ def GetQuestionByIdSQL(question_id: int):
         raise e
 
 
+def GetFullQuestionByIdSQL(question_id: int):
+    try:
+        question = GetQuestionByIdSQL(question_id)
+        answers = GetAnswersByQuestionIdSQL(question_id)
+        question.answers = answers
+        return question
+    # exception si il nous manque des paramètres
+    except CustomError as e:
+        raise e
+
+    except Exception as e:
+        raise e
+
+def GetFullQuestionByPositionSQL(position: int):
+    try:
+        question = GetQuestionByPositionSQL(position)
+        answers = GetAnswersByQuestionIdSQL(question.id)
+        question.answers = answers
+        return question
+    # exception si il nous manque des paramètres
+    except CustomError as e:
+        raise e
+
+    except Exception as e:
+        raise e
+
 def GetQuestionByPositionSQL(question_pos: int):
     db_connection = start_connect()
     cur = db_connection.cursor()
@@ -362,7 +350,6 @@ def GetQuestionByPositionSQL(question_pos: int):
         cur.execute("SELECT * FROM Question WHERE Quiz_Position = ?",
                     (question_pos,))
         result = cur.fetchone()
-        print(result)
 
         if result == None:
             raise CustomError(

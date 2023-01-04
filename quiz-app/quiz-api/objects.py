@@ -7,11 +7,11 @@ from custom_errors import CustomError
 
 
 class Answer():
-    def __init__(self, id: int, text: str, isCorrect: bool):
+    def __init__(self, id: int, text: str, isCorrect: bool, position: int):
         self.id = id
         self.text = text
         self.isCorrect = isCorrect
-        self.position = None
+        self.position = position
 
     def toJSON(self):
         return {
@@ -27,10 +27,13 @@ class Answer():
             missing_parameters.append("text")
         if self.isCorrect == None:
             missing_parameters.append("isCorrect")
+        if self.position == None:
+            missing_parameters.append("position")
         if len(missing_parameters) > 0:
             raise CustomError(400, "Missing values for : " + ''.join([str(a) + ", " for a in missing_parameters]))
 
     def loadFromDB(dbResult : object):
+        print("yesp")
         return Answer(dbResult[0], dbResult[2], dbResult[3], dbResult[4])
 
 class Question():
@@ -52,6 +55,17 @@ class Question():
             "possibleAnswers":[answer.toJSON() for answer in self.answers]
         }
 
+    def getAnswerInPosition(self, pos: int):
+        if pos < 1:
+            raise CustomError(400, "An answer is always at least in position 1 : " + str(pos))
+        if pos > len(self.answers):
+            raise CustomError(400, "There is no answer of that position : " + str(pos))
+
+        return Answer(self.answers[pos - 1])
+
+    def answerIsTrueInPosition(self, pos: int):
+        return self.getAnswerInPosition(pos).isCorrect
+
     def verifyCreate(self):
         missing_parameters = []
         if self.text == None:
@@ -70,24 +84,24 @@ class Question():
 
 
 class Participation() :
-    def __init__(self, id: int, playerName: str, answers: object):
+    def __init__(self, id: int, playerName: str, score: int):
         self.id = id
         self.playerName = playerName
-        self.answers = answers
+        self.score = score
 
     def toJSON(self):
         return {
             "id": self.id,
             "playerName": self.playerName,
-            "answers": [{"position": answer} for answer in self.answers]
+            "score": self.score
         }
 
     def verifyCreate(self):
         missing_parameters = []
         if self.playerName == None:
             missing_parameters.append("playerName")
-        if self.answers == None:
-            missing_parameters.append("answers")
+        if self.score == None:
+            missing_parameters.append("score")
         if len(missing_parameters) > 0:
             raise CustomError(400,"Missing values for : "+ ''.join([str(a) + ", " for a in missing_parameters]))
 

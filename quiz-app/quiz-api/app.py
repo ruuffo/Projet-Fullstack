@@ -23,7 +23,7 @@ def GetQuizInfo():
     for p in participants:
         score = 0
         for pos in range(len(p.answers)):
-            question = GetQuestionByPositionSQL(pos)
+            question = GetFullQuestionByPositionSQL(pos)
             trueAnswer = [answer for answer in question.answers if answer.isCorrect][0]
 
             if trueAnswer.position == p.answers[pos]:
@@ -42,9 +42,7 @@ def GetQuestionById(question_id):
 		#decode_token(authorization)
 
 		# get question in database
-		question = GetQuestionByIdSQL(question_id)
-		answers = GetAnswersByQuestionIdSQL(question_id)
-		question.answers = answers
+		question = GetFullQuestionByIdSQL(question_id)
 
 		return question.toJSON(), 200
 	except JwtError as e:  # token errors
@@ -68,9 +66,7 @@ def GetQuestionByPosition():
 			raise CustomError(404, "Missing position")
 
 		# get question in database
-		question = GetQuestionByPositionSQL(question_pos)
-		answers = GetAnswersByQuestionIdSQL(question.id)
-		question.answers = answers
+		question = GetFullQuestionByPositionSQL(question_pos)
 
 		return question.toJSON(), 200
 	except JwtError as e:  # token errors
@@ -101,16 +97,20 @@ def Login():
 @app.route('/participations', methods=['POST'])
 def PostParticipation():
 	try:
-		# Récupérer le token envoyé en paramètre
-		authorization = request.headers.get('Authorization')
-
-		# Lire le token. Si invalide : JwtException
-		decode_token(authorization)
 
 		# récupèrer un l'objet json envoyé dans le body de la requète
 		json = request.get_json()
 
-		participation = Participation(None, json.get("playerName"), json.get("answers"))
+		answers_list = [a for a in json.get("answers")]
+		score = 0
+
+		for question_num in range(1, len(answers_list) + 1):
+			question = GetFullQuestionByPositionSQL(question_num)
+			if question.answerIsTrueInPosition(answers_list[question_num]):
+				score += 10
+
+		participation = Participation(None, json.get("playerName"), score)
+		print("TEST")
 
 		# register participation in database
 		id_participation = PostParticipationSQL(participation)
@@ -141,7 +141,7 @@ def PostQuestion():
 		answers = []
 		if possibleAnswers != None:
 			for answer in possibleAnswers:
-				answers.append(Answer(None,answer.get("text"), answer.get("isCorrect")))
+				answers.append(Answer(None,answer.get("text"), answer.get("isCorrect"), None))
 
 		# get question
 		question = Question(None, json.get("title"), json.get("text"), json.get("image"), json.get("position"), answers)
@@ -150,7 +150,7 @@ def PostQuestion():
 		id_question = PostQuestionSQL(question)
 
         # register answers in database
-		i = 0
+		i = 1
 		for answer in question.answers:
 			answer.position = i
 			i += 1
@@ -202,7 +202,7 @@ def UpdateQuestion(question_id):
 		possibleAnswers = json.get("possibleAnswers")
 		answers = []
 		for answer in possibleAnswers :
-			answers.append(Answer(None, answer.get("text"), answer.get("isCorrect")))
+			answers.append(Answer(None, answer.get("text"), answer.get("isCorrect"), None))
 
 		# get question
 		question = Question(None,json.get("title"), json.get("text"), json.get("image"), json.get("position"), answers)
