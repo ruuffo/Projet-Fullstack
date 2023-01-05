@@ -1,5 +1,5 @@
 from sqlite3 import IntegrityError, OperationalError
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from jwt_utils import *
 from objects import *
@@ -23,7 +23,7 @@ def GetQuizInfo():
     names = [p.playerName for p in participants]
     size = GetHighestQuestionPositionSQL()
 
-    return {"size": size, "scores": scores, "names": names}, 200
+    return {"size": size, "scores": scores, "names" : names}, 200
 
 
 @app.route('/questions/<int:question_id>', methods=['GET'])

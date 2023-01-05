@@ -1,10 +1,11 @@
 <template>
   <h1>Home page</h1>
-  Resultats : {{ registeredScores }}
-  <div v-for="scoreEntry in registeredScores" v-bind:key="scoreEntry.date">
-    {{scoreEntry.Player_Name}} - {{scoreEntry.score}}
+
+  Resultats :
+
+  <div v-for="i in registeredScores.length">
+    {{ registeredNames[i] }} - {{ registeredScores[i] }}
   </div>
-  <router-link to="/start-new-quiz-page">Démarrer le quiz !</router-link>
 </template>
 
 <script>
@@ -14,15 +15,15 @@ export default {
   name: "HomePage",
   data() {
     return {
-      registeredScores : []
+      registeredNames: [],
+      registeredScores: []
     };
   },
   async created() {
 		console.log("Composant Home page 'created'")
-    this.registeredScores.push(0)
+    var json = await quizApiService.getQuizInfo()
+    this.registeredNames = json.data.names
+    this.registeredScores = json.data.scores
   }
 };
 </script>
-
-<style>
-</style>
