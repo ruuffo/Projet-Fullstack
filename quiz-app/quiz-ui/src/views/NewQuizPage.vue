@@ -2,13 +2,27 @@
   <div class="name">
     <p>Saisissez votre nom :</p>
       <input type="text" placeholder="Username" v-model="username">
-      <p>{{ username }}</p> 
-      <button>GO!</button>
+      <button @click="launchNewQuiz">GO!</button>
   </div>
 </template>
 
 <script>
-  var username = '';
+import participationStorageService from "@/services/ParticipationStorageService";
+export default{
+    name: "newquiz",
+    data(){
+        return{
+            username : ''
+        }
+    },
+    methods:{
+        launchNewQuiz(){
+            participationStorageService.savePlayerName(username);
+            console.log("Launch new quiz with", this.username);
+            this.$router.push('/questions');
+        }
+    }
+}
 
 </script>
 
