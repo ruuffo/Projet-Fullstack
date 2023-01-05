@@ -6,6 +6,8 @@
   <div v-for="i in registeredScores.length">
     {{ registeredNames[i] }} - {{ registeredScores[i] }}
   </div>
+  <router-link to="/start-new-quiz-page">Démarrer le quiz !</router-link>
+  <router-link to="/quiz">Participer au quiz</router-link>
 </template>
 
 <script>
