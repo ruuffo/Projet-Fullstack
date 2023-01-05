@@ -11,10 +11,10 @@ def start_connect():
 
 #region POST
 def CreateTableQuestionSQL():
-    db_connection = start_connect()
-    cur = db_connection.cursor()
 
     try:
+        db_connection = start_connect()
+        cur = db_connection.cursor()
 
         # start transaction
         cur.execute("begin")
@@ -49,10 +49,11 @@ def CreateTableQuestionSQL():
         raise e
 
 def CreateTableAnswerSQL():
-    db_connection = start_connect()
-    cur = db_connection.cursor()
 
     try:
+
+        db_connection = start_connect()
+        cur = db_connection.cursor()
 
         # start transaction
         cur.execute("begin")
@@ -88,10 +89,10 @@ def CreateTableAnswerSQL():
         raise e
 
 def CreateTableParticipationSQL():
-    db_connection = start_connect()
-    cur = db_connection.cursor()
 
     try:
+        db_connection = start_connect()
+        cur = db_connection.cursor()
 
         # start transaction
         cur.execute("begin")
@@ -129,19 +130,20 @@ def RebuildDBSQL():
     CreateTableParticipationSQL()
 
 def PostQuestionSQL(question: Question):
-    db_connection = start_connect()
-    cur = db_connection.cursor()
 
     try:
 
-        # start transaction
-        cur.execute("begin")
-
-            #QUESTION
+        # QUESTION
         # save the question to db
         question.verifyCreate()
 
         data = map_question_to_request(question)
+
+        db_connection = start_connect()
+        cur = db_connection.cursor()
+
+        # start transaction
+        cur.execute("begin")
         insertion_result = cur.execute(
             "insert into Question (Title,Text,Image,Quiz_position) values (?,?,?,?)", data)
 
@@ -175,19 +177,20 @@ def PostQuestionSQL(question: Question):
 
 def PostParticipationSQL(participation: Participation):
 
-    db_connection = start_connect()
-    cur = db_connection.cursor()
-
     try:
 
-        # start transaction
-        cur.execute("begin")
-
-            #QUESTION
+        # QUESTION
         # save the question to db
         participation.verifyCreate()
 
         data = map_participation_to_request(participation)
+
+        db_connection = start_connect()
+        cur = db_connection.cursor()
+
+        # start transaction
+        cur.execute("begin")
+
         insertion_result = cur.execute(
             "insert into Participation (Player_Name,Score) values (?,?)", data)
 
@@ -245,10 +248,10 @@ def PostAnswersSQL(answer: Answer, question_id: int):
 #region GET
 
 def GetHighestQuestionPositionSQL():
-    db_connection = start_connect()
-    cur = db_connection.cursor()
     try:
+        db_connection = start_connect()
         cur = db_connection.cursor()
+
         # start transaction
         cur.execute("begin")
 
@@ -256,11 +259,11 @@ def GetHighestQuestionPositionSQL():
 
         result = cur.fetchone()
 
-        if result == None:
-            raise CustomError(404, "There are probably no Questions at all in the database")
-
-        # send the request
         cur.close()
+
+        if result == None:
+            raise CustomError(
+                404, "There are probably no Questions at all in the database")
         return result[0]
 
     # exception si il nous manque des paramètres
@@ -273,16 +276,19 @@ def GetHighestQuestionPositionSQL():
         raise e
 
 def GetAllParticipationsSQL():
-    db_connection = start_connect()
-    cur = db_connection.cursor()
     try:
+
+        db_connection = start_connect()
         cur = db_connection.cursor()
+
         # start transaction
         cur.execute("begin")
 
         cur.execute("SELECT * FROM Participation")
 
         result = cur.fetchall()
+
+        cur.close()
 
         if result == None:
             result = []
@@ -293,8 +299,6 @@ def GetAllParticipationsSQL():
             participation = Participation.loadFromDB(r)
             allparticipations.append(participation)
 
-        # send the request
-        cur.close()
         return allparticipations
 
     # exception si il nous manque des paramètres
@@ -307,24 +311,23 @@ def GetAllParticipationsSQL():
         raise e
 
 def GetQuestionByIdSQL(question_id: int):
-    db_connection = start_connect()
-    cur = db_connection.cursor()
     try:
+        db_connection = start_connect()
         cur = db_connection.cursor()
+
         # start transaction
         cur.execute("begin")
 
         cur.execute("SELECT * FROM Question WHERE Id_Question = ?", (question_id,))
         result = cur.fetchone()
-        print(result)
+
+        cur.close()
 
         if result == None:
             raise CustomError(404, "There is no Question with id = "+str(question_id))
 
         question = Question.loadFromDB(result)
 
-        # send the request
-        cur.close()
         return question
 
     # exception si il nous manque des paramètres
@@ -363,16 +366,18 @@ def GetFullQuestionByPositionSQL(position: int):
         raise e
 
 def GetQuestionByPositionSQL(question_pos: int):
-    db_connection = start_connect()
-    cur = db_connection.cursor()
     try:
+
+        db_connection = start_connect()
         cur = db_connection.cursor()
+
         # start transaction
         cur.execute("begin")
 
         cur.execute("SELECT * FROM Question WHERE Quiz_Position = ?",
                     (question_pos,))
         result = cur.fetchone()
+        cur.close()
 
         if result == None:
             raise CustomError(
@@ -380,8 +385,6 @@ def GetQuestionByPositionSQL(question_pos: int):
 
         question = Question.loadFromDB(result)
 
-        # send the request
-        cur.close()
         return question
 
     # exception si il nous manque des paramètres
@@ -394,24 +397,22 @@ def GetQuestionByPositionSQL(question_pos: int):
         raise e
 
 def GetAnswerByIdSQL(answer_id: int):
-    db_connection = start_connect()
-    cur = db_connection.cursor()
     try:
+        db_connection = start_connect()
         cur = db_connection.cursor()
+
         # start transaction
         cur.execute("begin")
 
         cur.execute("SELECT * FROM Answer WHERE Id_Answer = ?", (answer_id,))
         result = cur.fetchone()
-        print(result)
+        cur.close()
 
         if result == None:
             raise CustomError(404, "There is no Answer with id = "+str(answer_id))
 
         answer = Answer.loadFromDB(result)
 
-        # send the request
-        cur.close()
         return answer
 
     # exception si il nous manque des paramètres
@@ -424,21 +425,20 @@ def GetAnswerByIdSQL(answer_id: int):
         raise e
 
 def GetAnswersByQuestionIdSQL(question_id: int):
-    db_connection = start_connect()
-    cur = db_connection.cursor()
     try:
+        db_connection = start_connect()
         cur = db_connection.cursor()
+
         # start transaction
         cur.execute("begin")
 
         cur.execute(
             "SELECT * FROM Answer WHERE Id_Question = ?", (question_id,))
         result = cur.fetchall()
+        cur.close()
 
         answers = [Answer.loadFromDB(answer) for answer in result]
 
-        # send the request
-        cur.close()
         return answers
 
     # exception si il nous manque des paramètres
@@ -453,27 +453,30 @@ def GetAnswersByQuestionIdSQL(question_id: int):
 
 #region PUT
 def PutQuestionSQL(question: Question, question_id: int):
-    db_connection = start_connect()
-    cur = db_connection.cursor()
-    cur.execute("PRAGMA foreign_keys = ON")
 
     try:
+        # QUESTION
+        # save the question to db
+        data = map_question_to_request_with_id(question, question_id)
+
+        db_connection = start_connect()
+        cur = db_connection.cursor()
+        cur.execute("PRAGMA foreign_keys = ON")
         # start transaction
         cur.execute("begin")
 
-            #QUESTION
-        # save the question to db
-        data = map_question_to_request_with_id(question,question_id)
         statement = cur.execute("UPDATE Question SET Title = ?, Text = ?, Image = ?, Quiz_position = ? WHERE Id_Question = ?", (data))
-
-        if statement.rowcount == 0:
-            raise CustomError(
-                404, "There is no Question with position = "+str(question_id))
+        deleted = statement.rowcount
 
         # send the request
         cur.execute("commit")
 
         cur.close()
+
+        if deleted == 0:
+            raise CustomError(
+                404, "There is no Question with position = "+str(question_id))
+
 
     except CustomError as e:
         cur.close()
@@ -487,11 +490,12 @@ def PutQuestionSQL(question: Question, question_id: int):
 
 #region DELETE
 def DeleteQuestionSQL(question_id: int):
-    db_connection = start_connect()
-    cur = db_connection.cursor()
-    cur.execute("PRAGMA foreign_keys = ON")
 
     try:
+        db_connection = start_connect()
+        cur = db_connection.cursor()
+        cur.execute("PRAGMA foreign_keys = ON")
+
         # start transaction
         cur.execute("begin")
 
@@ -514,11 +518,12 @@ def DeleteQuestionSQL(question_id: int):
         raise Exception("Failed to remove question with id: "+ str(question_id) +" from DB.\n" + str(e))
 
 def DeleteAllQuestionsSQL():
-    db_connection = start_connect()
-    cur = db_connection.cursor()
-    cur.execute("PRAGMA foreign_keys = ON")
 
     try:
+        db_connection = start_connect()
+        cur = db_connection.cursor()
+        cur.execute("PRAGMA foreign_keys = ON")
+
         # start transaction
         cur.execute("begin")
 
@@ -538,10 +543,9 @@ def DeleteAllQuestionsSQL():
         raise Exception("Failed to remove questions from DB.\n" + str(e))
 
 def DeleteAnswersSQL(question_id: int):
-    # ANSWERS
-    db_connection = start_connect()
-    cur = db_connection.cursor()
     try:
+        # ANSWERS
+        db_connection = start_connect()
         cur = db_connection.cursor()
         # start transaction
         cur.execute("begin")

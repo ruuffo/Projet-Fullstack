@@ -18,20 +18,12 @@ def hello_world():
 
 @app.route('/quiz-info', methods=['GET'])
 def GetQuizInfo():
-    scores = []
     participants = GetAllParticipationsSQL()
-    for p in participants:
-        score = 0
-        for pos in range(len(p.answers)):
-            question = GetFullQuestionByPositionSQL(pos)
-            trueAnswer = [answer for answer in question.answers if answer.isCorrect][0]
+    scores = [p.score for p in participants]
+    names = [p.playerName for p in participants]
+    size = GetHighestQuestionPositionSQL()
 
-            if trueAnswer.position == p.answers[pos]:
-                score += 10
-        scores.append(score)
-
-
-    return {"size": 0, "scores": []}, 200
+    return {"size": size, "scores": scores, "names": names}, 200
 
 
 @app.route('/questions/<int:question_id>', methods=['GET'])
@@ -110,10 +102,10 @@ def PostParticipation():
 		for question_num in range(1, len(answers_list) + 1):
 			question = GetFullQuestionByPositionSQL(question_num)
 			if question.answerIsTrueInPosition(answers_list[question_num - 1]):
-				score += 10
+				score += 1
 
 		participation = Participation(None, json.get("playerName"), score)
-		print("OK")
+
 		# register participation in database
 		id_participation = PostParticipationSQL(participation)
 
