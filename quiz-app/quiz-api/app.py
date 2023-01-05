@@ -210,7 +210,10 @@ def UpdateQuestion(question_id):
 		DeleteAnswersSQL(question_id)
 
 		# register answers in database
+		i = 1
 		for answer in question.answers:
+			answer.position = i
+			i += 1
 			PostAnswersSQL(answer, question_id)
 
 		return "OK", 204

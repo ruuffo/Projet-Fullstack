@@ -27,8 +27,6 @@ class Answer():
             missing_parameters.append("text")
         if self.isCorrect == None:
             missing_parameters.append("isCorrect")
-        if self.position == None:
-            missing_parameters.append("position")
         if len(missing_parameters) > 0:
             raise CustomError(400, "Missing values for : " + ''.join([str(a) + ", " for a in missing_parameters]))
 
