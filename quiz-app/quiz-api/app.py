@@ -102,16 +102,18 @@ def PostParticipation():
 		json = request.get_json()
 
 		answers_list = [a for a in json.get("answers")]
+		if (len(answers_list) != GetHighestQuestionPositionSQL()):
+			raise CustomError(404, "The number of answers differs from the number of Questions")
+
 		score = 0
 
 		for question_num in range(1, len(answers_list) + 1):
 			question = GetFullQuestionByPositionSQL(question_num)
-			if question.answerIsTrueInPosition(answers_list[question_num]):
+			if question.answerIsTrueInPosition(answers_list[question_num - 1]):
 				score += 10
 
 		participation = Participation(None, json.get("playerName"), score)
-		print("TEST")
-
+		print("OK")
 		# register participation in database
 		id_participation = PostParticipationSQL(participation)
 

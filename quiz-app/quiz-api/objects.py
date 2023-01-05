@@ -33,7 +33,6 @@ class Answer():
             raise CustomError(400, "Missing values for : " + ''.join([str(a) + ", " for a in missing_parameters]))
 
     def loadFromDB(dbResult : object):
-        print("yesp")
         return Answer(dbResult[0], dbResult[2], dbResult[3], dbResult[4])
 
 class Question():
@@ -61,7 +60,7 @@ class Question():
         if pos > len(self.answers):
             raise CustomError(400, "There is no answer of that position : " + str(pos))
 
-        return Answer(self.answers[pos - 1])
+        return self.answers[pos - 1]
 
     def answerIsTrueInPosition(self, pos: int):
         return self.getAnswerInPosition(pos).isCorrect

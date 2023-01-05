@@ -48,7 +48,6 @@ def CreateTableQuestionSQL():
         cur.close()
         raise e
 
-
 def CreateTableAnswerSQL():
     db_connection = start_connect()
     cur = db_connection.cursor()
@@ -87,7 +86,6 @@ def CreateTableAnswerSQL():
         cur.execute('rollback')
         cur.close()
         raise e
-
 
 def CreateTableParticipationSQL():
     db_connection = start_connect()
@@ -130,7 +128,6 @@ def RebuildDBSQL():
     CreateTableAnswerSQL()
     CreateTableParticipationSQL()
 
-
 def PostQuestionSQL(question: Question):
     db_connection = start_connect()
     cur = db_connection.cursor()
@@ -150,9 +147,12 @@ def PostQuestionSQL(question: Question):
 
         # send the request
         cur.execute("commit")
+
+        id = cur.lastrowid
+
         cur.close()
 
-        return cur.lastrowid
+        return id
 
     # exception si il nous manque des paramètres
     except CustomError as e:
@@ -173,10 +173,7 @@ def PostQuestionSQL(question: Question):
         cur.close()
         raise e
 
-
 def PostParticipationSQL(participation: Participation):
-
-
 
     db_connection = start_connect()
     cur = db_connection.cursor()
@@ -195,10 +192,12 @@ def PostParticipationSQL(participation: Participation):
             "insert into Participation (Player_Name,Score) values (?,?)", data)
 
         # send the request
+        id = cur.lastrowid
+
         cur.execute("commit")
         cur.close()
 
-        return cur.lastrowid
+        return id
 
     # exception si il nous manque des paramètres
     except CustomError as e:
@@ -211,7 +210,6 @@ def PostParticipationSQL(participation: Participation):
         cur.execute('rollback')
         cur.close()
         raise e
-
 
 def PostAnswersSQL(answer: Answer, question_id: int):
     # ANSWERS
@@ -246,6 +244,33 @@ def PostAnswersSQL(answer: Answer, question_id: int):
 
 #region GET
 
+def GetHighestQuestionPositionSQL():
+    db_connection = start_connect()
+    cur = db_connection.cursor()
+    try:
+        cur = db_connection.cursor()
+        # start transaction
+        cur.execute("begin")
+
+        cur.execute("SELECT MAX(Quiz_Position) FROM Question")
+
+        result = cur.fetchone()
+
+        if result == None:
+            raise CustomError(404, "There are probably no Questions at all in the database")
+
+        # send the request
+        cur.close()
+        return result[0]
+
+    # exception si il nous manque des paramètres
+    except CustomError as e:
+        cur.close()
+        raise e
+
+    except Exception as e:
+        cur.close()
+        raise e
 
 def GetAllParticipationsSQL():
     db_connection = start_connect()
@@ -281,7 +306,6 @@ def GetAllParticipationsSQL():
         cur.close()
         raise e
 
-
 def GetQuestionByIdSQL(question_id: int):
     db_connection = start_connect()
     cur = db_connection.cursor()
@@ -311,7 +335,6 @@ def GetQuestionByIdSQL(question_id: int):
     except Exception as e:
         cur.close()
         raise e
-
 
 def GetFullQuestionByIdSQL(question_id: int):
     try:
@@ -370,7 +393,6 @@ def GetQuestionByPositionSQL(question_pos: int):
         cur.close()
         raise e
 
-
 def GetAnswerByIdSQL(answer_id: int):
     db_connection = start_connect()
     cur = db_connection.cursor()
@@ -400,7 +422,6 @@ def GetAnswerByIdSQL(answer_id: int):
     except Exception as e:
         cur.close()
         raise e
-
 
 def GetAnswersByQuestionIdSQL(question_id: int):
     db_connection = start_connect()
@@ -492,7 +513,6 @@ def DeleteQuestionSQL(question_id: int):
         cur.close()
         raise Exception("Failed to remove question with id: "+ str(question_id) +" from DB.\n" + str(e))
 
-
 def DeleteAllQuestionsSQL():
     db_connection = start_connect()
     cur = db_connection.cursor()
@@ -516,7 +536,6 @@ def DeleteAllQuestionsSQL():
         cur.execute('rollback')
         cur.close()
         raise Exception("Failed to remove questions from DB.\n" + str(e))
-
 
 def DeleteAnswersSQL(question_id: int):
     # ANSWERS
