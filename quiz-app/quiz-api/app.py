@@ -258,8 +258,24 @@ def DeleteAllQuestions():
 		# register question in database
 		DeleteAllQuestionsSQL()
 
-		# Delete outdated answers
-		#DeleteAnswersSQL(question_id)
+		return "OK", 204
+	except JwtError as e:  # token errors
+		return e.message, 401
+	except CustomError as e:
+		return e.message, e.code
+	except Exception as e:
+		return "ERROR : " + str(e), e.args[0]
+
+
+@app.route('/participations/all', methods=['DELETE'])
+def DeleteAllParticipations():
+	try:
+		# Récupérer le token envoyé en paramètre
+		authorization = request.headers.get('Authorization')
+		decode_token(authorization)
+
+		# register question in database
+		DeleteAllParticipationsSQL()
 
 		return "OK", 204
 	except JwtError as e:  # token errors
@@ -267,7 +283,7 @@ def DeleteAllQuestions():
 	except CustomError as e:
 		return e.message, e.code
 	except Exception as e:
-		return "ERROR : " + str(e), 400#e.args[0]
+		return "ERROR : " + str(e), e.args[0]
 #endregion
 
 if __name__ == "__main__":

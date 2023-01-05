@@ -533,6 +533,29 @@ def DeleteQuestionSQL(question_id: int):
         db_connection.close()
         raise Exception("Failed to remove question with id: "+ str(question_id) +" from DB.\n" + str(e))
 
+def DeleteAllParticipationsSQL():
+
+    try:
+        db_connection = start_connect()
+        cur = db_connection.cursor()
+
+        # start transaction
+        cur.execute("begin")
+
+        # QUESTION
+        # delete the question from db
+        cur.execute("DELETE FROM Participation")
+
+        # send the request
+        db_connection.commit()
+        db_connection.close()
+
+    except Exception as e:
+        # in case of exception, rollback the transaction
+        db_connection.rollback()
+        db_connection.close()
+        raise Exception("Failed to remove participations from DB.\n" + str(e))
+
 def DeleteAllQuestionsSQL():
 
     try:
