@@ -33,19 +33,19 @@ def CreateTableQuestionSQL():
         )
 
         # send the request
-        cur.execute("commit")
-        cur.close()
+        db_connection.commit()
+        db_connection.close()
 
     # exception si on arrive pas a créer
     except sqlite3.IntegrityError as e:
         # in case of exception, rollback the transaction
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise CustomError(500, "Cannot create table Question : \n" + str(e))
 
     except Exception as e:
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
 def CreateTableAnswerSQL():
@@ -73,19 +73,19 @@ def CreateTableAnswerSQL():
         )
 
         # send the request
-        cur.execute("commit")
-        cur.close()
+        db_connection.commit()
+        db_connection.close()
 
     # exception si on arrive pas a créer
     except sqlite3.IntegrityError as e:
         # in case of exception, rollback the transaction
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise CustomError(500, "Cannot create table Answer : \n" + str(e))
 
     except Exception as e:
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
 def CreateTableParticipationSQL():
@@ -109,19 +109,19 @@ def CreateTableParticipationSQL():
         )
 
         # send the request
-        cur.execute("commit")
-        cur.close()
+        db_connection.commit()
+        db_connection.close()
 
     # exception si on arrive pas a créer
     except sqlite3.IntegrityError as e:
         # in case of exception, rollback the transaction
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise CustomError(500, "Cannot create table Participation : \n" + str(e))
 
     except Exception as e:
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
 def RebuildDBSQL():
@@ -147,32 +147,29 @@ def PostQuestionSQL(question: Question):
         insertion_result = cur.execute(
             "insert into Question (Title,Text,Image,Quiz_position) values (?,?,?,?)", data)
 
-        # send the request
-        cur.execute("commit")
-
+        db_connection.commit()
         id = cur.lastrowid
-
-        cur.close()
+        db_connection.close()
 
         return id
 
     # exception si il nous manque des paramètres
     except CustomError as e:
         # in case of exception, rollback the transaction
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
     # exception si on essaie de mettre une position qui existe déja
     except sqlite3.IntegrityError as e:
         # in case of exception, rollback the transaction
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise CustomError(400,"Cannot insert Question. The Question with position "+str(question.position)+" already exists.")
 
     except Exception as e:
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
 def PostParticipationSQL(participation: Participation):
@@ -195,23 +192,22 @@ def PostParticipationSQL(participation: Participation):
             "insert into Participation (Player_Name,Score) values (?,?)", data)
 
         # send the request
+        db_connection.commit()
         id = cur.lastrowid
-
-        cur.execute("commit")
-        cur.close()
+        db_connection.close()
 
         return id
 
     # exception si il nous manque des paramètres
     except CustomError as e:
         # in case of exception, rollback the transaction
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
     except Exception as e:
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
 def PostAnswersSQL(answer: Answer, question_id: int):
@@ -230,18 +226,18 @@ def PostAnswersSQL(answer: Answer, question_id: int):
             "insert into Answer (Text,IsCorrect, Position, Id_Question) values (?,?,?,?)", (data[0], data[1], data[2], question_id))
 
         # send the request
-        cur.execute("commit")
-        cur.close()
+        db_connection.commit()
+        db_connection.close()
 
     # exception si il nous manque des paramètres
     except CustomError as e:
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
     except Exception as e:
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 #endregion
 
@@ -257,9 +253,11 @@ def GetHighestQuestionPositionSQL():
 
         cur.execute("SELECT MAX(Quiz_Position) FROM Question")
 
+        db_connection.commit()
+
         result = cur.fetchone()
 
-        cur.close()
+        db_connection.close()
 
         if result == None:
             raise CustomError(
@@ -268,11 +266,13 @@ def GetHighestQuestionPositionSQL():
 
     # exception si il nous manque des paramètres
     except CustomError as e:
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
     except Exception as e:
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
 def GetAllParticipationsSQL():
@@ -286,9 +286,11 @@ def GetAllParticipationsSQL():
 
         cur.execute("SELECT * FROM Participation")
 
+        db_connection.commit()
+
         result = cur.fetchall()
 
-        cur.close()
+        db_connection.close()
 
         if result == None:
             result = []
@@ -303,11 +305,13 @@ def GetAllParticipationsSQL():
 
     # exception si il nous manque des paramètres
     except CustomError as e:
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
     except Exception as e:
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
 def GetQuestionByIdSQL(question_id: int):
@@ -319,9 +323,11 @@ def GetQuestionByIdSQL(question_id: int):
         cur.execute("begin")
 
         cur.execute("SELECT * FROM Question WHERE Id_Question = ?", (question_id,))
+
+        db_connection.commit()
         result = cur.fetchone()
 
-        cur.close()
+        db_connection.close()
 
         if result == None:
             raise CustomError(404, "There is no Question with id = "+str(question_id))
@@ -332,11 +338,13 @@ def GetQuestionByIdSQL(question_id: int):
 
     # exception si il nous manque des paramètres
     except CustomError as e:
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
     except Exception as e:
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
 def GetFullQuestionByIdSQL(question_id: int):
@@ -376,8 +384,9 @@ def GetQuestionByPositionSQL(question_pos: int):
 
         cur.execute("SELECT * FROM Question WHERE Quiz_Position = ?",
                     (question_pos,))
+        db_connection.commit()
         result = cur.fetchone()
-        cur.close()
+        db_connection.close()
 
         if result == None:
             raise CustomError(
@@ -389,11 +398,13 @@ def GetQuestionByPositionSQL(question_pos: int):
 
     # exception si il nous manque des paramètres
     except CustomError as e:
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
     except Exception as e:
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
 def GetAnswerByIdSQL(answer_id: int):
@@ -405,8 +416,10 @@ def GetAnswerByIdSQL(answer_id: int):
         cur.execute("begin")
 
         cur.execute("SELECT * FROM Answer WHERE Id_Answer = ?", (answer_id,))
+
+        db_connection.commit()
         result = cur.fetchone()
-        cur.close()
+        db_connection.close()
 
         if result == None:
             raise CustomError(404, "There is no Answer with id = "+str(answer_id))
@@ -417,11 +430,13 @@ def GetAnswerByIdSQL(answer_id: int):
 
     # exception si il nous manque des paramètres
     except CustomError as e:
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
     except Exception as e:
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
 def GetAnswersByQuestionIdSQL(question_id: int):
@@ -434,8 +449,9 @@ def GetAnswersByQuestionIdSQL(question_id: int):
 
         cur.execute(
             "SELECT * FROM Answer WHERE Id_Question = ?", (question_id,))
+        db_connection.commit()
         result = cur.fetchall()
-        cur.close()
+        db_connection.close()
 
         answers = [Answer.loadFromDB(answer) for answer in result]
 
@@ -443,11 +459,13 @@ def GetAnswersByQuestionIdSQL(question_id: int):
 
     # exception si il nous manque des paramètres
     except CustomError as e:
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 
     except Exception as e:
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
 #endregion
 
@@ -469,22 +487,21 @@ def PutQuestionSQL(question: Question, question_id: int):
         deleted = statement.rowcount
 
         # send the request
-        cur.execute("commit")
-
-        cur.close()
+        db_connection.commit()
+        db_connection.close()
 
         if deleted == 0:
             raise CustomError(
                 404, "There is no Question with position = "+str(question_id))
 
-
     except CustomError as e:
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise e
     except Exception as e:
         # in case of exception, rollback the transaction
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise Exception("Failed to put new question in DB. " + str(e))
 #endregion
 
@@ -505,16 +522,15 @@ def DeleteQuestionSQL(question_id: int):
         count = deleteStatement.rowcount
 
         # send the request
-        cur.execute("commit")
-
-        cur.close()
+        db_connection.commit()
+        db_connection.close()
 
         return count
 
     except Exception as e:
         # in case of exception, rollback the transaction
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise Exception("Failed to remove question with id: "+ str(question_id) +" from DB.\n" + str(e))
 
 def DeleteAllQuestionsSQL():
@@ -532,14 +548,13 @@ def DeleteAllQuestionsSQL():
         cur.execute("DELETE FROM Question")
 
         # send the request
-        cur.execute("commit")
-
-        cur.close()
+        db_connection.commit()
+        db_connection.close()
 
     except Exception as e:
         # in case of exception, rollback the transaction
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise Exception("Failed to remove questions from DB.\n" + str(e))
 
 def DeleteAnswersSQL(question_id: int):
@@ -553,11 +568,11 @@ def DeleteAnswersSQL(question_id: int):
         cur.execute("DELETE FROM Answer WHERE Id_Question = ?",(question_id,))
 
         # send the request
-        cur.execute("commit")
-        cur.close()
+        db_connection.commit()
+        db_connection.close()
     except Exception as e:
         # in case of exception, rollback the transaction
-        cur.execute('rollback')
-        cur.close()
+        db_connection.rollback()
+        db_connection.close()
         raise Exception("Failed to remove old answers to question with id: "+str(question_id)+" from DB. " + str(e))
 #endregion
