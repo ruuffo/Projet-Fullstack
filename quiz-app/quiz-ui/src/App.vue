@@ -1,8 +1,8 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import adminStorageService from "@/services/AdminStorage";
-function isConnected(){
-  return adminStorageService.getToken() === '' ? false:true
+function isConnected() {
+  return adminStorageService.getToken() === '' ? false : true
 }
 </script>
 
@@ -23,13 +23,14 @@ function isConnected(){
 <style>
 nav {
   display: flex;
-  flex-direction: column;
   align-items: center;
 }
 
 nav a {
-  font-size: 3rem;
+  font-size: 2rem;
   margin: 1rem 0;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 </style>
 

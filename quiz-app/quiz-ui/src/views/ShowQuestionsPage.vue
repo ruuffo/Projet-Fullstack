@@ -7,11 +7,11 @@
 
     <div class="answer" v-for="question in all_questions">
       <label>
-        {{ question.image }}<br />
+        <img v-if="question.image" :src="question.image" class="question-image" alt="Question image" />
+        <br />
         Question {{ question.position }}<br />
-        {{ question.title }}<br />
-
-        <br/><br />
+        <span class="question-title" :title="question.title">{{ question.title }}</span>
+        <br /><br />
       </label>
     </div>
   </form>
@@ -21,16 +21,28 @@
 .answer:not(:first-child) {
   margin-top: 1rem;
 }
+
+.question-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.question-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
 </style>
 
 <script>
 import quizApiService from "@/services/QuizApiService";
 import adminStorageService from "@/services/AdminStorage";
 export default {
-  name:"showquestions",
+  name: "showquestions",
   data() {
     return {
-      all_questions : []
+      all_questions: []
     };
   },
   async created() {
