@@ -8,6 +8,12 @@ export default {
     clearToken(){
       window.localStorage.setItem("token",'');
     },
+    setQuestionToDetail(position){
+      window.localStorage.setItem("positionQuestionDetail", position)
+    },
+    getQuestionToDetail(){
+      return window.localStorage.getItem("positionQuestionDetail")
+    },
     getToken() {
           var token = window.localStorage.getItem("token");
           if (token == undefined || token == null)
