@@ -7,7 +7,7 @@
       <div v-for="scoreEntry in registeredScores" v-bind:key="scoreEntry.date">
         {{ scoreEntry.playerName }} - {{ scoreEntry.score }}
       </div>
-
+      <button @click="goHome"></button>
     </div>
     </body>
 </template>
@@ -20,14 +20,30 @@ export default{
         return{
             score: 0,
             playerName: '',
-            classement: 1
+            classement: '',
+            registeredScores: []
         }
-    }
+    },
+    methods:{
+        goHome(){
+            this.$router.push('/');
+        }
+    },
     async created() {
 		console.log("Composant Score 'created'")
         this.playerName = participationStorageService.getPlayerName()
+        this.score = participationStorageService.getParticipationScore()
         var json = await quizApiService.getQuizInfo()
         this.registeredScores = json.data.scores
+        var rank = 1
+        for(score in registeredScores){
+            if(score.playerName === this.playerName){
+                this.classement = rank
+                break;
+            }
+            rank++
+        }
+        this.classement = this.classement === 1 ? "1 er":this.classement+" eme"
     }
 }
 </script>
