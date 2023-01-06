@@ -29,16 +29,20 @@ export default{
     },
     methods:{
         async loginwithpassword(){
+          var token = "";
           try{
             var response = await quizApiService.login(this.password);
             this.errormessage = ''
             console.log("Login with password : ", this.password);
-            var token = response.data.token
-            adminStorageService.saveToken(token)
-            this.$router.push('/adminTools');
+            token = response.data.token
           }
           catch(e){
-              this.errormessage = "Invalid password"
+            this.errormessage = "Invalid password"
+          }
+          finally{
+            adminStorageService.saveToken(token)
+            if (adminStorageService.getToken() != "")
+              this.$router.push('/adminTools');
           }
         }
     }
