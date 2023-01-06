@@ -1,6 +1,9 @@
 <template>
   <body>
-    <h1>Home page</h1>
+    <h1>Super QUIZ</h1>
+    <button>
+      <router-link to="/login"> <bt>Admin Tools</bt></router-link>
+    </button>
 
     <div class="container">
       <h2>Resultats :</h2>
@@ -10,7 +13,7 @@
       </div>
       <br>
       <button>
-        <router-link to="/newquiz">Participer au quiz</router-link>
+        <router-link to="/newquiz"> <bt>Participer au quiz</bt></router-link>
       </button>
     </div>
   </body>
@@ -19,6 +22,11 @@
 <style scoped>
 body {
   background-color: powderblue;
+}
+
+bt {
+  color:black;
+  text-align:center;
 }
 
 h1 {

@@ -27,6 +27,9 @@ export default {
                 console.error(error);
             });
     },
+    login(password){
+        return this.call("post", "login", JSON.stringify({ "password": password }));
+    },
     getQuizInfo() {
         return this.call("get", "quiz-info");
     },
