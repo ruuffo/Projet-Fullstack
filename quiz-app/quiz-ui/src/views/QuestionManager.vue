@@ -4,7 +4,7 @@
         <QuestionDisplay :question="currentQuestion" @click-on-answer="answerClickedHandler" />
     </div>
 </template>
-  
+
 <script>
 import participationStorageService from "@/services/ParticipationStorageService";
 import quizApiService from "@/services/QuizApiService";
@@ -56,7 +56,7 @@ export default{
 
 </script>
 
-<style>
+<style scoped>
   @media (min-width: 1024px) {
     .about {
       min-height: 100vh;
@@ -64,4 +64,30 @@ export default{
       align-items: center;
     }
   }
+
+body {
+    background-color: powderblue;
+}
+
+h1 {
+    color: blue;
+    text-align: center;
+}
+
+.container {
+    text-align: center;
+}
+
+h2 {
+    color: darkgreen;
+    text-align: center;
+}
+
+div {
+    text-align: center;
+}
+
+p {
+    color: red;
+}
 </style>
