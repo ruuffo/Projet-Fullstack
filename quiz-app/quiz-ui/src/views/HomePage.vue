@@ -15,6 +15,25 @@
   </body>
 </template>
 
+<script>
+
+import quizApiService from "@/services/QuizApiService";
+
+export default {
+  name: "HomePage",
+  data() {
+    return {
+      registeredScores: []
+    };
+  },
+  async created() {
+		console.log("Composant Home page 'created'")
+    var json = await quizApiService.getQuizInfo()
+    this.registeredScores = json.data.scores
+  }
+};
+</script>
+
 <style scoped>
 body {
   background-color: powderblue;
@@ -47,23 +66,3 @@ p {
   color: red;
 }
 </style>
-
-
-<script>
-
-import quizApiService from "@/services/QuizApiService";
-
-export default {
-  name: "HomePage",
-  data() {
-    return {
-      registeredScores: []
-    };
-  },
-  async created() {
-		console.log("Composant Home page 'created'")
-    var json = await quizApiService.getQuizInfo()
-    this.registeredScores = json.data.scores
-  }
-};
-</script>

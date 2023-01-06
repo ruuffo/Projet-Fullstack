@@ -292,7 +292,7 @@ def GetAllParticipationsSQL():
         # start transaction
         cur.execute("begin")
 
-        cur.execute("SELECT * FROM Participation")
+        cur.execute("SELECT * FROM Participation ORDER BY score DESC")
 
         db_connection.commit()
 

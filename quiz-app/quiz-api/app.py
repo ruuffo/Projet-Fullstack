@@ -28,7 +28,7 @@ def GetQuizInfo():
     if size == None:
         size = 0
 
-    scores = sorted(scores, key = lambda s: s["score"], reverse=True)
+    #scores = sorted(scores, key = lambda s: s["score"], reverse=True)
 
     return {"size": size, "scores": scores}, 200
 
