@@ -60,5 +60,9 @@ export default {
 
         console.log("Add new Question with token : \n" + token + "\n\nJSON :\n" + JSON.stringify(json))
         return this.call("post", "questions", json, token);
+    },
+    getAllQuestions(token, json) {
+        console.log("Getting all questions")
+        return this.call("get", "questions/all");
     }
 };

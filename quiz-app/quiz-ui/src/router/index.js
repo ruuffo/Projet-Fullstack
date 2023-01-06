@@ -8,6 +8,7 @@ import QuestionManager from '../views/QuestionManager.vue'
 import ScorePage from '../views/ScorePage.vue'
 import PageNotFound from '../views/PageNotFound.vue'
 import PostQuestionPage from '../views/PostQuestionPage.vue'
+import ShowQuestionsPage from '../views/ShowQuestionsPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,6 +58,11 @@ const router = createRouter({
       path: '/score',
       name: 'score',
       component: ScorePage
+    },
+    {
+      path: '/showquestions',
+      name: 'showquestions',
+      component: ShowQuestionsPage
     },
     {
       path: '/:catchAll(.*)*',

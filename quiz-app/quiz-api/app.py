@@ -76,6 +76,23 @@ def GetQuestionByPosition():
 		return "ERROR : " + str(e), e.args[0]
 
 
+@app.route('/questions/all', methods=['GET'])
+def GetAllQuestions():
+	try:
+		# get question in database
+		allquestions = GetAllQuestionsSQL()
+
+		qlist = []
+		for q in allquestions:
+			qlist.append(q.toJSON())
+
+		return qlist, 200
+
+	except CustomError as e:
+		return e.message, e.code
+	except Exception as e:
+		return "ERROR : " + str(e), e.args[0]
+
 @app.route('/participations', methods=['GET'])
 def GetParticipationByName():
 	try:

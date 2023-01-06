@@ -457,6 +457,50 @@ def GetFullQuestionByPositionSQL(position: int):
     except Exception as e:
         raise e
 
+
+def GetAllQuestionsSQL():
+    try:
+
+        db_connection = start_connect()
+        cur = db_connection.cursor()
+
+        # start transaction
+        cur.execute("begin")
+
+        cur.execute(
+            "SELECT * FROM Question ORDER BY Quiz_Position ASC")
+
+        db_connection.commit()
+
+        result = cur.fetchall()
+
+        db_connection.close()
+
+        if result == None:
+            result = []
+
+        allquestions = []
+
+        for r in result:
+            q = Question.loadFromDB(r)
+            all_a = GetAnswersByQuestionIdSQL(q.id)
+            q.answers = all_a
+            allquestions.append(q)
+
+        return allquestions
+
+    # exception si il nous manque des paramètres
+    except CustomError as e:
+        db_connection.rollback()
+        db_connection.close()
+        raise e
+
+    except Exception as e:
+        db_connection.rollback()
+        db_connection.close()
+        raise e
+
+
 def GetQuestionByPositionSQL(question_pos: int):
     try:
 

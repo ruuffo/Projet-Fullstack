@@ -6,12 +6,13 @@
 
       <div v-if="token != ''">
         <p>Choisissez une option :</p>
-        <button @click="gotoPostQuestionPage">Ajouter une nouvelle question</button>
+        <button @click="gotoPostQuestionPage">Ajouter une nouvelle question</button><br />
+        <button @click="gotoShowQuestionsPage"> Show all questions </button><br />
       </div>
 
       <div v-else>
         <p>You are not logged in !</p>
-        <button @click="gotoLoginPage"> Go to login page </button>
+        <button @click="gotoLoginPage"> Go to login page </button><br/>
       </div>
 
     </div>
@@ -33,6 +34,9 @@ export default {
     },
     gotoPostQuestionPage() {
       this.$router.push('/postquestion');
+    },
+    gotoShowQuestionsPage() {
+      this.$router.push('/showquestions');
     }
   }
 }
