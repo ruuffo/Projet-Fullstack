@@ -25,6 +25,8 @@ def GetQuizInfo():
         scores.append({"playerName": p.playerName, "score":p.score})
 
     size = GetHighestQuestionPositionSQL()
+    if size == None:
+        size = 0
 
     scores = sorted(scores, key = lambda s: s["score"], reverse=True)
 
@@ -115,8 +117,9 @@ def PostParticipation():
 		# register participation in database
 		print("avant post")
 		id_participation = PostParticipationSQL(participation)
+		player = GetParticipationByIdSQL(id_participation)
 
-		return {"id": id_participation}, 200
+		return player.toJSON(), 200
 	except JwtError as e:  # token errors
 		return e.message, 401
 	except CustomError as e:
@@ -157,7 +160,9 @@ def PostQuestion():
 			i += 1
 			PostAnswersSQL(answer, id_question)
 
-		return {"id":id_question}, 200
+		question = GetFullQuestionByIdSQL(id_question)
+
+		return question.toJSON(), 200
 	except JwtError as e: # token errors
 		return e.message, 401
 	except CustomError as e:
