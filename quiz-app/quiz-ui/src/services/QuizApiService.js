@@ -27,18 +27,23 @@ export default {
                 console.error(error);
             });
     },
-    login(password){
-        try{
-            return this.call("post", "login", JSON.stringify({ "password": password }));
-        }
-        catch{
-            return ''
-        }
-    },
     getQuizInfo() {
         return this.call("get", "quiz-info");
     },
     getQuestion(position) {
         return this.call("get", "questions?position="+ position);
+    },
+    login(password) {
+        console.log("login with password : " + password)
+        try {
+            return this.call("post", "login", JSON.stringify({ "password": password }));
+        }
+        catch {
+            return ''
+        }
+    },
+    addQuestion(token, json) {
+        console.log("Add new Question with token : " + token + "\nJSON :\n" + JSON.stringify(json))
+        return this.call("post", "questions", JSON.stringify(json), token);
     }
 };

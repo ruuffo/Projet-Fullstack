@@ -1,10 +1,6 @@
 <template>
   <body>
     <h1>Super QUIZ</h1>
-    <button>
-      <router-link to="/login"> <bt>Admin Tools</bt></router-link>
-    </button>
-
     <div class="container">
       <h2>Resultats :</h2>
 
