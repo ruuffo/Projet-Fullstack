@@ -16,6 +16,7 @@ export default{
             currentQuestion: {
                 questionTitle: '',
                 questionText: '',
+                questionImage: '',
                 possibleAnswers: [],
             },
             currentQuestionPosition: 1,
@@ -49,9 +50,12 @@ export default{
     async created() {
 		console.log("Composant QuestionManager 'created'")
         var json = await quizApiService.getQuestion(this.currentQuestionPosition)
-        this.currentQuestion = json.data.question
-        json = await quizApiService.getQuizInfo()
         console.log(json)
+        this.currentQuestion.questionTitle = json.data.questionTitle
+        this.currentQuestion.questionText = json.data.text
+        this.currentQuestion.questionImage = json.data.image
+        this.currentQuestion.possibleAnswers = json.data.possibleAnswers
+        json = await quizApiService.getQuizInfo()
         this.totalNumberOfQuestion = json.data.size
     }
 }
