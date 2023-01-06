@@ -31,7 +31,10 @@ export default {
         return this.call("get", "quiz-info");
     },
     getQuestion(position) {
-        return this.call("get", "questions?position="+ position);
+        return this.call("get", "questions?position=" + position);
+    },
+    saveParticipation(playerName, answers){
+        return this.call("post", "participations", JSON.stringify({"playerName": playerName, "answers": answers}))
     },
     login(password) {
         console.log("login with password : " + password)
@@ -45,5 +48,8 @@ export default {
     addQuestion(token, json) {
         console.log("Add new Question with token : " + token + "\nJSON :\n" + JSON.stringify(json))
         return this.call("post", "questions", JSON.stringify(json), token);
+    },
+    getPlayerScore(playerName){
+        return this.call("get", "participation?name=" + playerName)
     }
 };

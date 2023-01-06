@@ -292,7 +292,7 @@ def GetAllParticipationsSQL():
         # start transaction
         cur.execute("begin")
 
-        cur.execute("SELECT * FROM Participation")
+        cur.execute("SELECT * FROM Participation ORDER BY score DESC")
 
         db_connection.commit()
 
@@ -344,6 +344,44 @@ def GetParticipationByIdSQL(part_id: int):
         if result == None:
             raise CustomError(
                 404, "There is no Participation with id = "+str(part_id))
+
+        particiation = Participation.loadFromDB(result)
+
+        return particiation
+
+    # exception si il nous manque des paramètres
+    except CustomError as e:
+        db_connection.rollback()
+        db_connection.close()
+        raise e
+
+    except Exception as e:
+        db_connection.rollback()
+        db_connection.close()
+        raise e
+
+
+def GetParticipationByNameSQL(p_name: str):
+    try:
+
+        db_connection = start_connect()
+        cur = db_connection.cursor()
+
+        # start transaction
+        cur.execute("begin")
+
+        cur.execute(
+            "SELECT * FROM Participation where Player_Name = ?", (p_name,))
+
+        db_connection.commit()
+
+        result = cur.fetchone()
+
+        db_connection.close()
+
+        if result == None:
+            raise CustomError(
+                404, "There is no Participation for player with name = "+str(p_name))
 
         particiation = Participation.loadFromDB(result)
 

@@ -1,7 +1,7 @@
 <template>
     <div class="question">
         <h1>Question {{ currentQuestionPosition }} / {{ totalNumberOfQuestion }}</h1>
-        <QuestionDisplay :question="currentQuestion" @click-on-answer="answerClickedHandler" />
+        <QuestionDisplay :question="currentQuestion" @answerSelected="answerClickedHandler" />
     </div>
 </template>
 
@@ -30,32 +30,33 @@ export default{
     },
     methods:{
         async loadQuestionByPosition(position){
-            currentQuestionPosition++
             var json = await quizApiService.getQuestion(position)
-
+            this.currentQuestion.questionTitle = json.data.questionTitle
+            this.currentQuestion.questionText = json.data.text
+            this.currentQuestion.questionImage = json.data.image
+            this.currentQuestion.possibleAnswers = json.data.possibleAnswers
         },
         async answerClickedHandler(answerSelected){
-            answers[currentQuestionPosition] = answerSelected
-            if(currentQuestionPosition == totalNumberOfQuestion)
-                endQuiz()
+            this.answers[this.currentQuestionPosition-1] = answerSelected
+            if(this.currentQuestionPosition >= this.totalNumberOfQuestion)
+                this.endQuiz()
             else{
-
+                this.currentQuestionPosition++
+                this.loadQuestionByPosition(this.currentQuestionPosition)
             }
         },
         async endQuiz(){
-            await quizApiService.saveParticipation(this.answers)
+            var playerName = participationStorageService.getPlayerName()
+            await quizApiService.saveParticipation(playerName, this.answers)
+            await quizApiService.getPlayerScore(playerName)
             participationStorageService.saveParticipationScore(this.score)
+            this.$router.push('/score');
         }
     },
     async created() {
 		console.log("Composant QuestionManager 'created'")
-        var json = await quizApiService.getQuestion(this.currentQuestionPosition)
-        console.log(json)
-        this.currentQuestion.questionTitle = json.data.questionTitle
-        this.currentQuestion.questionText = json.data.text
-        this.currentQuestion.questionImage = json.data.image
-        this.currentQuestion.possibleAnswers = json.data.possibleAnswers
-        json = await quizApiService.getQuizInfo()
+        this.loadQuestionByPosition(this.currentQuestionPosition)
+        var json = await quizApiService.getQuizInfo()
         this.totalNumberOfQuestion = json.data.size
     }
 }
