@@ -1,4 +1,5 @@
 <template>
+
   <body>
     <h1>Super QUIZ</h1>
     <div class="container">
@@ -9,7 +10,9 @@
       </div>
       <br>
       <button>
-        <router-link to="/newquiz"> <div class="bt">Participer au quiz</div></router-link>
+        <router-link to="/newquiz">
+          <div class="bt">Participer au quiz</div>
+        </router-link>
       </button>
     </div>
   </body>
@@ -27,42 +30,41 @@ export default {
     };
   },
   async created() {
-		console.log("Composant Home page 'created'")
+    console.log("Composant Home page 'created'")
     var json = await quizApiService.getQuizInfo()
     this.registeredScores = json.data.scores
   }
 };
 </script>
-
-<style scoped>
-body {
-  background-color: powderblue;
-}
-
-bt {
-  color:black;
-  text-align:center;
+<style>
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  font-size: larger;
 }
 
 h1 {
-  color: blue;
-  text-align: center;
+  font-size: 2em;
+  margin-bottom: 0.5em;
 }
 
-.container{
-  text-align: center;
+h2 {
+  font-size: 1.5em;
+  margin-top: 0;
+  margin-bottom: 0.5em;
 }
 
-h2{
-  color: darkgreen;
+.bt {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 32px;
   text-align: center;
-}
-
-div{
-  text-align: center;
-}
-
-p {
-  color: red;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
 }
 </style>

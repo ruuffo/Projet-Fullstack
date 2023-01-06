@@ -1,7 +1,8 @@
 <template>
+
   <body>
     <div class="container">
-      <h1>Adiminstrator login</h1>
+      <h1>Administrator login</h1>
       <div>
         <p>Saisissez votre mot de passe :</p>
         <input type="text" placeholder="Password" v-model="password">
@@ -19,69 +20,67 @@
 <script>
 import quizApiService from "@/services/QuizApiService";
 import adminStorageService from "@/services/AdminStorage";
-export default{
-    name: "Login",
-    data(){
-        return{
-          password : '',
-          errormessage :''
-        }
-    },
-    methods:{
-        async loginwithpassword(){
-          var token = "";
-          try{
-            var response = await quizApiService.login(this.password);
-            this.errormessage = ''
-            token = response.data.token
-          }
-          catch(e){
-            this.errormessage = "Invalid password"
-          }
-          finally{
-            adminStorageService.saveToken(token)
-            if (adminStorageService.getToken() != "")
-              this.$router.push('/adminTools');
-          }
-        }
+export default {
+  name: "Login",
+  data() {
+    return {
+      password: '',
+      errormessage: ''
     }
+  },
+  methods: {
+    async loginwithpassword() {
+      var token = "";
+      try {
+        var response = await quizApiService.login(this.password);
+        this.errormessage = ''
+        token = response.data.token
+      }
+      catch (e) {
+        this.errormessage = "Invalid password"
+      }
+      finally {
+        adminStorageService.saveToken(token)
+        if (adminStorageService.getToken() != "")
+          this.$router.push('/adminTools');
+      }
+    }
+  }
 }
 
 </script>
 
-
-<style scoped>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-
-body {
-  background-color: powderblue;
+<style>
+.container {
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 h1 {
-  color: blue;
-  text-align: center;
+  font-size: 1.5em;
+  margin-bottom: 0.5em;
 }
 
-.container {
-  text-align: center;
+input {
+  display: block;
+  width: 80%;
+  margin: 0 auto;
+  padding: 0.5em;
+  font-size: 1em;
+  border: 1px solid #ddd;
 }
 
-h2 {
-  color: darkgreen;
+button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 15px 32px;
   text-align: center;
-}
-
-div {
-  text-align: center;
-}
-
-p {
-  color: red;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
 }
 </style>

@@ -9,10 +9,10 @@
 import participationStorageService from "@/services/ParticipationStorageService";
 import quizApiService from "@/services/QuizApiService";
 import QuestionDisplay from "@/views/QuestionDisplay.vue";
-export default{
+export default {
     name: "QuestionManager",
-    data(){
-        return{
+    data() {
+        return {
             currentQuestion: {
                 questionTitle: '',
                 questionText: '',
@@ -25,27 +25,27 @@ export default{
             answers: []
         }
     },
-    components:{
+    components: {
         QuestionDisplay
     },
-    methods:{
-        async loadQuestionByPosition(position){
+    methods: {
+        async loadQuestionByPosition(position) {
             var json = await quizApiService.getQuestion(position)
             this.currentQuestion.questionTitle = json.data.questionTitle
             this.currentQuestion.questionText = json.data.text
             this.currentQuestion.questionImage = json.data.image
             this.currentQuestion.possibleAnswers = json.data.possibleAnswers
         },
-        async answerClickedHandler(answerSelected){
-            this.answers[this.currentQuestionPosition-1] = answerSelected
-            if(this.currentQuestionPosition >= this.totalNumberOfQuestion)
+        async answerClickedHandler(answerSelected) {
+            this.answers[this.currentQuestionPosition - 1] = answerSelected
+            if (this.currentQuestionPosition >= this.totalNumberOfQuestion)
                 this.endQuiz()
-            else{
+            else {
                 this.currentQuestionPosition++
                 this.loadQuestionByPosition(this.currentQuestionPosition)
             }
         },
-        async endQuiz(){
+        async endQuiz() {
             var playerName = participationStorageService.getPlayerName()
             await quizApiService.saveParticipation(playerName, this.answers)
             await quizApiService.getPlayerScore(playerName)
@@ -54,7 +54,7 @@ export default{
         }
     },
     async created() {
-		console.log("Composant QuestionManager 'created'")
+        console.log("Composant QuestionManager 'created'")
         this.loadQuestionByPosition(this.currentQuestionPosition)
         var json = await quizApiService.getQuizInfo()
         this.totalNumberOfQuestion = json.data.size
@@ -62,39 +62,3 @@ export default{
 }
 
 </script>
-
-<style scoped>
-@media (min-width: 1024px) {
-    .about {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-    }
-}
-
-body {
-    background-color: powderblue;
-}
-
-h1 {
-    color: blue;
-    text-align: center;
-}
-
-.container {
-    text-align: center;
-}
-
-h2 {
-    color: darkgreen;
-    text-align: center;
-}
-
-div {
-    text-align: center;
-}
-
-p {
-    color: red;
-}
-</style>
