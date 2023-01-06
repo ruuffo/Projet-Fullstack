@@ -5,7 +5,7 @@
 
         <div v-if="token != ''">
           <p>Choisissez une option :</p>
-          <button>TEST</button>
+          <button @click="gotoPostQuestionPage">Ajouter une nouvelle question</button>
         </div>
 
         <div v-else>
@@ -30,16 +30,8 @@ export default{
         gotoLoginPage(){
           this.$router.push('/login');
         },
-        async loginwithpassword(){
-          try{
-            var response = await quizApiService.login(this.password);
-            this.errormessage = ''
-            var token = response.data.token
-            this.$router.push('/adminTools');
-          }
-          catch(e){
-              this.errormessage = "Invalid password"
-          }
+        gotoPostQuestionPage(){
+          this.$router.push('/postquestion');
         }
     }
 }
