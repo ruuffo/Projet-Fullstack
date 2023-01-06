@@ -53,19 +53,19 @@ export default{
         json = await quizApiService.getQuizInfo()
         console.log(json)
         this.totalNumberOfQuestion = json.data.size
-  }
+    }
 }
 
 </script>
 
 <style scoped>
-  @media (min-width: 1024px) {
+@media (min-width: 1024px) {
     .about {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
     }
-  }
+}
 
 body {
     background-color: powderblue;
