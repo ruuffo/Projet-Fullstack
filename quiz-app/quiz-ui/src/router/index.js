@@ -6,6 +6,7 @@ import LoginPage from '../views/LoginPage.vue'
 import AdminToolsPage from '../views/AdminToolsPage.vue'
 import QuestionManager from '../views/QuestionManager.vue'
 import ScorePage from '../views/ScorePage.vue'
+import DisconnectPage from '../views/Disconnect.vue'
 import PageNotFound from '../views/PageNotFound.vue'
 import PostQuestionPage from '../views/PostQuestionPage.vue'
 
@@ -57,6 +58,11 @@ const router = createRouter({
       path: '/score',
       name: 'score',
       component: ScorePage
+    },
+    {
+      path: '/disconnect',
+      name: 'disconnect',
+      component: DisconnectPage
     },
     {
       path: '/:catchAll(.*)*',
