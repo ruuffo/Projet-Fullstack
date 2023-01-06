@@ -43,14 +43,16 @@ export default{
         },
         async endQuiz(){
             await quizApiService.saveParticipation(this.answers)
-            participationStorageService.saveParticipationScore(score)
+            participationStorageService.saveParticipationScore(this.score)
         }
     },
     async created() {
 		console.log("Composant QuestionManager 'created'")
-        var json = await quizApiService.getQuestion(currentQuestionPosition)
+        var json = await quizApiService.getQuestion(this.currentQuestionPosition)
         this.currentQuestion = json.data.question
-        this.totalNumberOfQuestion = json.data.totalNumberOfQuestion
+        json = await quizApiService.getQuizInfo()
+        console.log(json)
+        this.totalNumberOfQuestion = json.data.size
   }
 }
 

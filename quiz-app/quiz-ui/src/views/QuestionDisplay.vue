@@ -17,7 +17,7 @@ export default{
     name: "QuestionDisplay",
     props:{
         question:{
-            type: object
+            type: Object
         }
     },
     emits: ["answerSelected"]
