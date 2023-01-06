@@ -5,6 +5,9 @@ export default {
       saveToken(token) {
             window.localStorage.setItem("token", token);
     },
+    clearToken(){
+      window.localStorage.setItem("token",'');
+    },
     getToken() {
           var token = window.localStorage.getItem("token");
           if (token == undefined || token == null)
