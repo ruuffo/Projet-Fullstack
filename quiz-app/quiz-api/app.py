@@ -75,6 +75,31 @@ def GetQuestionByPosition():
 	except Exception as e:
 		return "ERROR : " + str(e), e.args[0]
 
+
+@app.route('/participations', methods=['GET'])
+def GetParticipationByName():
+	try:
+		# Récupérer le token envoyé en paramètre /////
+		#authorization = request.headers.get('Authorization')
+		# decode_token(authorization)
+
+		# get position
+		p_name = request.args['name']
+		if (p_name == None):
+			raise CustomError(404, "Missing player name")
+
+		# get question in database
+		participation = GetParticipationByNameSQL(p_name)
+
+		return participation.toJSON(), 200
+	except JwtError as e:  # token errors
+		return e.message, 401
+	except CustomError as e:
+		return e.message, e.code
+	except Exception as e:
+		return "ERROR : " + str(e), e.args[0]
+
+
 # endregion
 
 # region POST
