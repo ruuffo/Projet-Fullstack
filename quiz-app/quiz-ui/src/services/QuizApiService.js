@@ -45,11 +45,11 @@ export default {
             return ''
         }
     },
+    getPlayerScore(playerName){
+        return this.call("get", "participations?name=" + playerName)
+    },
     addQuestion(token, json) {
         console.log("Add new Question with token : " + token + "\nJSON :\n" + JSON.stringify(json))
         return this.call("post", "questions", JSON.stringify(json), token);
-    },
-    getPlayerScore(playerName){
-        return this.call("get", "participation?name=" + playerName)
     }
 };

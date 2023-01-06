@@ -33,20 +33,22 @@ export default {
       var token = "";
       try {
         var response = await quizApiService.login(this.password);
-        this.errormessage = ''
-        token = response.data.token
+        this.errormessage = '';
+        token = response.data.token;
       }
       catch (e) {
-        this.errormessage = "Invalid password"
+        this.errormessage = "Invalid password";
+        this.password = '';
       }
       finally {
-        adminStorageService.saveToken(token)
+        adminStorageService.saveToken(token);
         if (adminStorageService.getToken() != "")
           this.$router.push('/adminTools');
       }
     }
   }
 }
+
 
 </script>
 
