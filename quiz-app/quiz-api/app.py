@@ -5,6 +5,7 @@ from jwt_utils import *
 from objects import *
 from db_utils import *
 from custom_errors import *
+from objects import *
 
 app = Flask(__name__)
 CORS(app)
@@ -19,11 +20,15 @@ def hello_world():
 @app.route('/quiz-info', methods=['GET'])
 def GetQuizInfo():
     participants = GetAllParticipationsSQL()
-    scores = [p.score for p in participants]
-    names = [p.playerName for p in participants]
+    scores = []
+    for p in participants:
+        scores.append({"playerName": p.playerName, "score":p.score})
+
     size = GetHighestQuestionPositionSQL()
 
-    return {"size": size, "scores": scores, "names" : names}, 200
+    scores = sorted(scores, key = lambda s: s["score"], reverse=True)
+
+    return {"size": size, "scores": scores}, 200
 
 
 @app.route('/questions/<int:question_id>', methods=['GET'])
