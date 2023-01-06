@@ -1,10 +1,11 @@
 <template>
-        Question n°{{question.questionPosition}}:
+        <h1>Question n°{{question.questionPosition}}:</h1>
         <br>
-        <p> {{question.questionTitle}} </p>
-        <p> {{question.questionText}} </p>
-        <img v-if="question.questionImage" :src="question.questionImage" />
+        <p class="question-title"> {{question.questionTitle}} </p>
+        <p class="question-title"> {{question.questionText}} </p>
+        <img v-if="question.questionImage" :src="question.questionImage" class="question-image" />
       <br>
+      <h1>Reponses:</h1><br>
       <div v-for="answer in question.possibleAnswers">
         <p>{{ answer.text }}</p>
       </div>
@@ -44,3 +45,21 @@ export default {
     }
 };
 </script>
+
+<style>
+.answer:not(:first-child) {
+  margin-top: 1rem;
+}
+
+.question-image {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 10%;
+}
+
+.question-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+</style>

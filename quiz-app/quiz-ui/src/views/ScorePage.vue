@@ -8,7 +8,7 @@
       <div v-for="scoreEntry in registeredScores" v-bind:key="scoreEntry.date">
         {{ scoreEntry.playerName }} - {{ scoreEntry.score }}
       </div>
-      <button @click="goHome"></button>
+      <button @click="goHome">retour à la page d'accueil</button>
     </div>
   </body>
 </template>

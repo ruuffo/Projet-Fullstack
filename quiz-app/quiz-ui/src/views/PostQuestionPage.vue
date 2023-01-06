@@ -1,5 +1,4 @@
 <template>
-  <form @submit="submitForm">
     <label>
       Question:
       <br />
@@ -21,8 +20,7 @@
     </div>
     <br />
     <button @click.prevent="addAnswer">Ajouter une réponse</button>
-    <button type="submit">Envoyer</button>
-  </form>
+    <button @click.prevent="submitQuestion">Envoyer</button>
 </template>
 
 <style>
@@ -49,7 +47,7 @@ export default {
     removeAnswer(index) {
       this.answers.splice(index, 1);
     },
-    async submitForm() {
+    async submitQuestion() {
 
       this.question.possibleAnswers = this.answers;
 

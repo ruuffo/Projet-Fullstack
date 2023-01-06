@@ -11,6 +11,7 @@
         <br />
         Question {{ question.position }}<br />
         <span class="question-title" :title="question.title">{{ question.title }}</span>
+        <br><button @click.prevent="showDetails(question.position)">Details</button>
         <br /><br />
       </label>
     </div>
