@@ -2,14 +2,21 @@
   <form @submit="submitForm">
     <label>
       Question:
-      <input type="text" v-model="question" />
+      <br />
+      Text: <input type="text" v-model="question.text" /><br />
+      Title: <input type="text" v-model="question.title" /><br />
+      Image: <input type="text" v-model="question.image" /><br />
+      Position: <input type="number" min="1" oninput="validity.valid||(value='')" v-model="question.position" /><br />
     </label>
     <br />
     <div class="answer" v-for="(answer, index) in answers" :key="index">
       <label>
         Réponse {{ index + 1 }}:
-        <input type="text" v-model="answer.text" />
-        <button v-if="index > 0" @click.prevent="removeAnswer(index)">Supprimer</button>
+        <br/>
+        Text: <input type="text" v-model="answer.text" /><br />
+        Check si réponse correcte: <input type="checkbox" id="checkbox" v-model="answer.isCorrect">
+        <p>     </p>
+        <button v-if="index > 0" @click.prevent="removeAnswer(index)">Supprimer Réponse {{ index + 1}}</button>
       </label>
     </div>
     <br />
@@ -26,28 +33,63 @@
 
 <script>
 import quizApiService from "@/services/QuizApiService";
+import adminStorageService from "@/services/AdminStorage";
 export default {
+  name:"postquestion",
   data() {
     return {
-      question: '',
-      answers: [{ text: '' }],
+      question: new Question(),
+      answers: [new Answer()],
     };
   },
   methods: {
     addAnswer() {
-      this.answers.push({ text: '' });
+      this.answers.push(new Answer());
     },
     removeAnswer(index) {
       this.answers.splice(index, 1);
     },
     async submitForm() {
-      const data = {
-        question: this.question,
-        answers: this.answers,
-      };
-      const response = await axios.post('/api/questions', data);
-      console.log(response);
+      // var answerslist = [];
+      // for(var answer in this.answers){
+      //   console.log("-->" + answer.text)
+      //   var a = JSON.stringify(answer);
+      //   answerslist.push(a);
+      // }
+
+      this.question.possibleAnswers = this.answers;//JSON.stringify(answerslist)
+      //var json = JSON.stringify(this.question)
+      const response = await quizApiService.addQuestion(adminStorageService.getToken(), this.question);
+      console.log("Posting a new question with JSON :\n" + JSON.stringify(this.question) + "\n\nResponse:\n" + response);
     },
   },
 };
+
+export class Question {
+  text = "";
+  title = "";
+  image = "";
+  position = "";
+  possibleAnswers = "";
+
+  constructor() {
+    this.text = "";
+    this.title = "";
+    this.image = "";
+    this.position = 1;
+    this.possibleAnswers = "";
+  }
+
+}
+
+export class Answer {
+  text = "";
+  isCorrect = "";
+
+  constructor() {
+    this.text = "";
+    this.isCorrect = false;
+  }
+
+}
 </script>
