@@ -50,6 +50,6 @@ export default {
         return this.call("post", "questions", JSON.stringify(json), token);
     },
     getPlayerScore(playerName){
-        return this.call("get", "participation?name=" + playerName)
+        return this.call("get", "participations?name=" + playerName)
     }
 };

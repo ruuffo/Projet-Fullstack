@@ -2,7 +2,7 @@
     <body>
     <div class="score">
       <h1>{{playerName}}, Votre dernier score est: {{score}} </h1>
-      <p> Vous êtes {{Classement}} dans le classement ! </p>
+      <p> Vous êtes {{classement}} dans le classement ! </p>
       <h2>Classement des scores globaux:</h2>
       <div v-for="scoreEntry in registeredScores" v-bind:key="scoreEntry.date">
         {{ scoreEntry.playerName }} - {{ scoreEntry.score }}
@@ -14,8 +14,9 @@
 
 <script>
 import participationStorageService from "@/services/ParticipationStorageService";
+import quizApiService from "@/services/QuizApiService";
 export default{
-    name: "Score",
+    name: "ScorePage",
     data(){
         return{
             score: 0,
@@ -36,14 +37,14 @@ export default{
         var json = await quizApiService.getQuizInfo()
         this.registeredScores = json.data.scores
         var rank = 1
-        for(score in registeredScores){
-            if(score.playerName === this.playerName){
-                this.classement = rank
+        for(var scoreEntry of this.registeredScores){
+            if(scoreEntry.playerName === this.playerName){
                 break;
             }
             rank++
         }
-        this.classement = this.classement === 1 ? "1 er":this.classement+" eme"
+        this.classement = rank
+        this.classement += (rank === 1) ? "er":"eme"
     }
 }
 </script>
