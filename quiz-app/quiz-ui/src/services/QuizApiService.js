@@ -33,6 +33,9 @@ export default {
     getQuestion(position) {
         return this.call("get", "questions?position="+ position);
     },
+    saveParticipation(playerName, answers){
+        return this.call("post", "participations", JSON.stringify({"playerName": playerName, "answers": answers}))
+    },
     login(password) {
         console.log("login with password : " + password)
         try {
