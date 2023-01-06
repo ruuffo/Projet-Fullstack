@@ -5,7 +5,7 @@
       <h1>Administrator login</h1>
       <div>
         <p>Saisissez votre mot de passe :</p>
-        <input type="text" placeholder="Password" v-model="password">
+        <input type="password" placeholder="Password" v-model="password">
 
         <button @click="loginwithpassword"> Log in </button>
 

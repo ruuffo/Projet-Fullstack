@@ -59,8 +59,16 @@ export default {
 
       this.question.possibleAnswers = this.answers;//JSON.stringify(answerslist)
       //var json = JSON.stringify(this.question)
-      var response = await quizApiService.addQuestion(adminStorageService.getToken(), this.question);
-      console.log("Posting a new question with JSON :\n" + JSON.stringify(this.question) + "\n\nResponse:\n" + JSON.stringify(response));
+      var test = {
+        "text": "test",
+        "title": "test",
+        "image": "test",
+        "position": 12,
+        "possibleAnswers":[]
+        }
+      console.log("token : " + adminStorageService.getToken());
+      var response = await quizApiService.addQuestion(adminStorageService.getToken(), test);
+      console.log("Posting a new question with JSON :\n" + JSON.stringify(test) + "\n\nResponse:\n" + JSON.stringify(response));
 
 
       this.$router.push('/adminTools');

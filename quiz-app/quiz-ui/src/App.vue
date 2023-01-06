@@ -10,6 +10,7 @@ import { RouterLink, RouterView } from 'vue-router'
         <RouterLink to="/login">Login</RouterLink>
         <RouterLink to="/admintools">Tools</RouterLink>
         <RouterLink to="/about">About</RouterLink>
+        <RouterLink v-if="isConnected" tp="/disconnect">Disconnect</RouterLink>
       </nav>
     </div>
   </header>

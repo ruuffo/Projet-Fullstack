@@ -34,12 +34,12 @@ export default {
         return this.call("get", "questions?position=" + position);
     },
     saveParticipation(playerName, answers){
-        return this.call("post", "participations", JSON.stringify({"playerName": playerName, "answers": answers}))
+        return this.call("post", "participations", {"playerName": playerName, "answers": answers})
     },
     login(password) {
         console.log("login with password : " + password)
         try {
-            return this.call("post", "login", JSON.stringify({ "password": password }));
+            return this.call("post", "login", { "password": password });
         }
         catch {
             return ''
@@ -50,6 +50,6 @@ export default {
     },
     addQuestion(token, json) {
         console.log("Add new Question with token : " + token + "\nJSON :\n" + JSON.stringify(json))
-        return this.call("post", "questions", JSON.stringify(json), token);
+        return this.call("post", "questions", json, token);
     }
 };
