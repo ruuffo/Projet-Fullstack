@@ -33,7 +33,6 @@ export default{
           try{
             var response = await quizApiService.login(this.password);
             this.errormessage = ''
-            console.log("Login with password : ", this.password);
             token = response.data.token
           }
           catch(e){

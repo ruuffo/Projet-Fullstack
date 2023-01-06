@@ -34,7 +34,6 @@ export default{
           try{
             var response = await quizApiService.login(this.password);
             this.errormessage = ''
-            console.log("Login with password : ", this.password);
             var token = response.data.token
             this.$router.push('/adminTools');
           }
