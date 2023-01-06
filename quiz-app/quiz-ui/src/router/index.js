@@ -1,5 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
+import AboutView from '../views/AboutView.vue'
+import NewQuizPage from '../views/NewQuizPage.vue'
+import LoginPage from '../views/LoginPage.vue'
+import AdminToolsPage from '../views/AdminToolsPage.vue'
+import QuestionManager from '../views/QuestionManager.vue'
+import PageNotFound from '../views/PageNotFound.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,27 +21,35 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      component: AboutView
+    },
+    {
+      path: '/admintools',
+      name: 'admintools',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: AdminToolsPage
     },
     {
       path: '/newquiz',
       name: 'newquiz',
-      component: () => import('../views/NewQuizPage.vue')
+      component: NewQuizPage
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/LoginPage.vue')
+      component: LoginPage
     },
     {
       path: '/quiz',
       name: 'quiz',
-      component: () => import('../views/QuestionManager.vue')
+      component: QuestionManager
     },
     {
       path: '/:catchAll(.*)*',
       name: "PageNotFound",
-      component: () => import('../views/PageNotFound.vue')
+      component: PageNotFound
     }
   ]
 })

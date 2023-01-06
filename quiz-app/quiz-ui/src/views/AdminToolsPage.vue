@@ -1,40 +1,41 @@
 <template>
   <body>
     <div class="container">
-      <h1>Adiminstrator login</h1>
-      <div>
-        <p>Saisissez votre mot de passe :</p>
-        <input type="text" placeholder="Password" v-model="password">
+      <h1>Adiminstrator Tools</h1>
 
-        <button @click="loginwithpassword"> Log in </button>
-
-        <div v-if="errormessage != undefined && errormessage != null && errormessage != ''">
-          {{ errormessage }}
+        <div v-if="token != ''">
+          <p>Choisissez une option :</p>
+          <button>TEST</button>
         </div>
-      </div>
+
+        <div v-else>
+          <p>You are not logged in !</p>
+          <button @click="gotoLoginPage"> Go to login page </button>
+        </div>
+
     </div>
   </body>
 </template>
 
 <script>
-import quizApiService from "@/services/QuizApiService";
 import adminStorageService from "@/services/AdminStorage";
 export default{
-    name: "Login",
+    name: "AdminTools",
     data(){
         return{
-          password : '',
-          errormessage :''
-        }
+          token: adminStorageService.getToken()
+      }
     },
     methods:{
+        gotoLoginPage(){
+          this.$router.push('/login');
+        },
         async loginwithpassword(){
           try{
             var response = await quizApiService.login(this.password);
             this.errormessage = ''
             console.log("Login with password : ", this.password);
             var token = response.data.token
-            adminStorageService.saveToken(token)
             this.$router.push('/adminTools');
           }
           catch(e){

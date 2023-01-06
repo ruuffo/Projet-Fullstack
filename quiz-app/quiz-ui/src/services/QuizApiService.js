@@ -28,7 +28,12 @@ export default {
             });
     },
     login(password){
-        return this.call("post", "login", JSON.stringify({ "password": password }));
+        try{
+            return this.call("post", "login", JSON.stringify({ "password": password }));
+        }
+        catch{
+            return ''
+        }
     },
     getQuizInfo() {
         return this.call("get", "quiz-info");

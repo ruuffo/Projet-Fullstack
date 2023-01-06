@@ -13,7 +13,7 @@
       </div>
       <br>
       <button>
-        <router-link to="/newquiz"> <bt>Participer au quiz</bt></router-link>
+        <router-link to="/newquiz"> <div class="bt">Participer au quiz</div></router-link>
       </button>
     </div>
   </body>
