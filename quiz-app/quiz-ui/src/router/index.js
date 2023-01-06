@@ -6,6 +6,7 @@ import LoginPage from '../views/LoginPage.vue'
 import AdminToolsPage from '../views/AdminToolsPage.vue'
 import QuestionManager from '../views/QuestionManager.vue'
 import PageNotFound from '../views/PageNotFound.vue'
+import PostQuestionPage from '../views/PostQuestionPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,10 +48,16 @@ const router = createRouter({
       component: QuestionManager
     },
     {
+      path: '/postquestion',
+      name: 'postquestion',
+      component: PostQuestionPage
+    },
+    {
       path: '/:catchAll(.*)*',
       name: "PageNotFound",
       component: PageNotFound
-    }
+    },
+
   ]
 })
 
