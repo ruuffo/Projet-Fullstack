@@ -47,6 +47,11 @@ const router = createRouter({
       component: QuestionManager
     },
     {
+      path: '/score',
+      name: 'score',
+      component: Score
+    },
+    {
       path: '/:catchAll(.*)*',
       name: "PageNotFound",
       component: PageNotFound
