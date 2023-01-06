@@ -9,7 +9,8 @@ def start_connect():
     db_connection.isolation_level = None
     return db_connection
 
-#region POST
+#region TABLES SQL
+
 def CreateTableQuestionSQL():
 
     try:
@@ -47,6 +48,7 @@ def CreateTableQuestionSQL():
         db_connection.rollback()
         db_connection.close()
         raise e
+
 
 def CreateTableAnswerSQL():
 
@@ -88,6 +90,7 @@ def CreateTableAnswerSQL():
         db_connection.close()
         raise e
 
+
 def CreateTableParticipationSQL():
 
     try:
@@ -117,17 +120,22 @@ def CreateTableParticipationSQL():
         # in case of exception, rollback the transaction
         db_connection.rollback()
         db_connection.close()
-        raise CustomError(500, "Cannot create table Participation : \n" + str(e))
+        raise CustomError(
+            500, "Cannot create table Participation : \n" + str(e))
 
     except Exception as e:
         db_connection.rollback()
         db_connection.close()
         raise e
 
+
 def RebuildDBSQL():
     CreateTableQuestionSQL()
     CreateTableAnswerSQL()
     CreateTableParticipationSQL()
+#endregion
+
+#region POST
 
 def PostQuestionSQL(question: Question):
 
