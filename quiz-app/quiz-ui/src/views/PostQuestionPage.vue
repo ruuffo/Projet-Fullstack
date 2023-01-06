@@ -50,26 +50,21 @@ export default {
       this.answers.splice(index, 1);
     },
     async submitForm() {
-      // var answerslist = [];
-      // for(var answer in this.answers){
-      //   console.log("-->" + answer.text)
-      //   var a = JSON.stringify(answer);
-      //   answerslist.push(a);
+
+      this.question.possibleAnswers = this.answers;
+
+      // var test = {
+      //   "text": "test",
+      //   "title": "test",
+      //   "image": "test",
+      //   "position": 12,
+      //   "possibleAnswers":[]
       // }
 
-      this.question.possibleAnswers = this.answers;//JSON.stringify(answerslist)
-      //var json = JSON.stringify(this.question)
-      var test = {
-        "text": "test",
-        "title": "test",
-        "image": "test",
-        "position": 12,
-        "possibleAnswers":[]
-        }
-      console.log("token : " + adminStorageService.getToken());
-      var response = await quizApiService.addQuestion(adminStorageService.getToken(), test);
-      console.log("Posting a new question with JSON :\n" + JSON.stringify(test) + "\n\nResponse:\n" + JSON.stringify(response));
-
+      var token = await adminStorageService.getToken();
+7
+      var response = await quizApiService.addQuestion(token, this.question);
+      console.log("Posting a new question with JSON :\n" + JSON.stringify(this.question) + "\n\nResponse:\n" + JSON.stringify(response));
 
       this.$router.push('/adminTools');
 

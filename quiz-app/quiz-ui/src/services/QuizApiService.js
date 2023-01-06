@@ -49,7 +49,16 @@ export default {
         return this.call("get", "participations?name=" + playerName)
     },
     addQuestion(token, json) {
-        console.log("Add new Question with token : " + token + "\nJSON :\n" + JSON.stringify(json))
+
+        // var test = {
+        //     "text": "test",
+        //     "title": "test",
+        //     "image": "test",
+        //     "position": 12,
+        //     "possibleAnswers": []
+        // }
+
+        console.log("Add new Question with token : \n" + token + "\n\nJSON :\n" + JSON.stringify(json))
         return this.call("post", "questions", json, token);
     }
 };
