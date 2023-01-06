@@ -49,17 +49,12 @@ export default {
         return this.call("get", "participations?name=" + playerName)
     },
     addQuestion(token, json) {
-
-        // var test = {
-        //     "text": "test",
-        //     "title": "test",
-        //     "image": "test",
-        //     "position": 12,
-        //     "possibleAnswers": []
-        // }
-
         console.log("Add new Question with token : \n" + token + "\n\nJSON :\n" + JSON.stringify(json))
         return this.call("post", "questions", json, token);
+    },
+    updateQuestion(token, json) {
+        console.log("Replace Question with token : \n" + token + "\n\nJSON :\n" + JSON.stringify(json))
+        return this.call("put", "questions/"+json.id, json, token);
     },
     getAllQuestions(token, json) {
         console.log("Getting all questions")

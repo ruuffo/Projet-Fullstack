@@ -10,6 +10,7 @@ import DisconnectPage from '../views/Disconnect.vue'
 import QuestionDetailPage from '../views/QuestionDetail.vue'
 import PageNotFound from '../views/PageNotFound.vue'
 import PostQuestionPage from '../views/PostQuestionPage.vue'
+import PutQuestionPage from '../views/PostQuestionPage.vue'
 import ShowQuestionsPage from '../views/ShowQuestionsPage.vue'
 
 const router = createRouter({
@@ -55,6 +56,11 @@ const router = createRouter({
       path: '/postquestion',
       name: 'postquestion',
       component: PostQuestionPage
+    },
+    {
+      path: '/putquestion',
+      name: 'putquestion',
+      component: PutQuestionPage
     },
     {
       path: '/score',

@@ -612,13 +612,13 @@ def PutQuestionSQL(question: Question, question_id: int):
         cur.execute("begin")
 
         statement = cur.execute("UPDATE Question SET Title = ?, Text = ?, Image = ?, Quiz_position = ? WHERE Id_Question = ?", (data))
-        deleted = statement.rowcount
+        updated = statement.rowcount
 
         # send the request
         db_connection.commit()
         db_connection.close()
 
-        if deleted == 0:
+        if updated == 0:
             raise CustomError(
                 404, "There is no Question with position = "+str(question_id))
 

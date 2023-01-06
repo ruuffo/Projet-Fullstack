@@ -1,16 +1,18 @@
 <template>
-        <h1>Question n°{{question.questionPosition}}:</h1>
-        <br>
-        <p class="question-title"> {{question.questionTitle}} </p>
-        <p class="question-title"> {{question.questionText}} </p>
-        <img v-if="question.questionImage" :src="question.questionImage" class="question-image" />
+      <h1>Question n°{{question.questionPosition}}:</h1>
       <br>
-      <h1>Reponses:</h1><br>
-      <div v-for="answer in question.possibleAnswers">
-        <p>{{ answer.text }}</p>
-      </div>
-      <br>
-  </template>
+      <p class="question-title"> {{question.questionTitle}} </p>
+      <p class="question-title"> {{question.questionText}} </p>
+      <img v-if="question.questionImage" :src="question.questionImage" class="question-image" />
+    <br>
+    <h1>Reponses:</h1><br>
+    <div v-for="answer in question.possibleAnswers">
+      <p>{{ answer.text }}</p>
+    </div>
+    <br>
+    <br>
+      <button @click.prevent="gotoUpdatePage">Go to update this question</button>
+</template>
 
 <script>
 import quizApiService from "@/services/QuizApiService";
@@ -27,7 +29,12 @@ export default {
                 questionPosition: 1
             }
         }
-    },
+  },
+  async created() {
+    console.log("Composant QuestionDetail 'created'")
+    var position = adminStorageService.getQuestionToDetail()
+    this.loadQuestionByPosition(position)
+  },
   methods: {
     async loadQuestionByPosition(position) {
             var json = await quizApiService.getQuestion(position)
@@ -36,13 +43,11 @@ export default {
             this.question.questionText = json.data.text
             this.question.questionImage = json.data.image
             this.question.possibleAnswers = json.data.possibleAnswers
-        },
-  },
-  async created() {
-        console.log("Composant QuestionDetail 'created'")
-        var position = adminStorageService.getQuestionToDetail()
-        this.loadQuestionByPosition(position)
+    },
+    gotoUpdatePage() {
+      this.$router.push('/putquestion');
     }
+  }
 };
 </script>
 
