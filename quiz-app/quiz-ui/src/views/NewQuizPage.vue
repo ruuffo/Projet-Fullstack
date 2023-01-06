@@ -9,7 +9,7 @@
 <script>
 import participationStorageService from "@/services/ParticipationStorageService";
 export default{
-    name: "newquiz",
+    name: "NewQuiz",
     data(){
         return{
             username : ''
@@ -17,9 +17,9 @@ export default{
     },
     methods:{
         launchNewQuiz(){
-            participationStorageService.savePlayerName(username);
+            participationStorageService.savePlayerName(this.username);
             console.log("Launch new quiz with", this.username);
-            this.$router.push('/questions');
+            this.$router.push('/quiz');
         }
     }
 }
