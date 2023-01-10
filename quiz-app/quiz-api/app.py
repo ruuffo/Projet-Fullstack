@@ -189,22 +189,26 @@ def PostQuestion():
 			for answer in possibleAnswers:
 				answers.append(Answer(None,answer.get("text"), answer.get("isCorrect"), None))
 
-		# get question
+		# get complete question
 		question = Question(None, json.get("title"), json.get("text"), json.get("image"), json.get("position"), answers)
 
-		# register question in database
-		id_question = PostQuestionSQL(question)
+		# check if already a question at position
+		try:
+			testq = GetQuestionByPositionSQL(question.position)
 
-        # register answers in database
-		i = 1
-		for answer in question.answers:
-			answer.position = i
-			i += 1
-			PostAnswersSQL(answer, id_question)
+			#then increase all equal and superior positions by 1
+			IncreasePositionsByOneSQL(testq.position, None)
+		except Exception:
+			#if no question in position ( error ), do nothing more
+			pass
 
-		question = GetFullQuestionByIdSQL(id_question)
+		finally:
+			# register question in database
+			id_question = PostFullQuestionSQL(question)
 
-		return question.toJSON(), 200
+			question = GetFullQuestionByIdSQL(id_question)
+
+			return question.toJSON(), 200
 	except JwtError as e: # token errors
 		return e.message, 401
 	except CustomError as e:
@@ -255,20 +259,35 @@ def UpdateQuestion(question_id):
 		# get question
 		question = Question(None,json.get("title"), json.get("text"), json.get("image"), json.get("position"), answers)
 
-		# register question in database
-		PutQuestionSQL(question, question_id)
+		try:
+			# try to get existing question at that position
+			testq = GetFullQuestionByPositionSQL(question.position)
 
-		#Delete outdated answers
-		DeleteAnswersSQL(question_id)
+			try:
+				# get current question to get current position
+				currentq = GetFullQuestionByIdSQL(question_id)
 
-		# register answers in database
-		i = 1
-		for answer in question.answers:
-			answer.position = i
-			i += 1
-			PostAnswersSQL(answer, question_id)
+				currentPos = currentq.position
+				aimedPos = testq.position
 
-		return "OK", 204
+				if currentPos < aimedPos:
+					DecreasePositionsByOneSQL(currentPos, aimedPos)
+				else:
+					IncreasePositionsByOneSQL(aimedPos, currentPos)
+
+			except Exception as e:
+				# if no such question, or error post, raise error
+				raise e
+		except Exception as e:
+			# if no question at that position, or errors, just continue
+			pass
+
+		finally:
+
+			# register question in database
+			PutFullQuestionSQL(question, question_id)
+
+			return "OK", 204
 	except JwtError as e: # token errors
 		return e.message, 401
 	except CustomError as e:
@@ -287,9 +306,12 @@ def DeleteQuestion(question_id):
 		decode_token(authorization)
 
 		# register question in database
+		question = GetQuestionByIdSQL(question_id)
 		count = DeleteQuestionSQL(question_id)
 		if (count == 0):
 			raise CustomError(404, "No question with id : "+str(question_id))
+
+		DecreasePositionsByOneSQL(question.position, None)
 
 		return "OK", 204
 	except JwtError as e:  # token errors

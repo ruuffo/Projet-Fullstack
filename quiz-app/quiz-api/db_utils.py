@@ -247,6 +247,24 @@ def PostAnswersSQL(answer: Answer, question_id: int):
         db_connection.rollback()
         db_connection.close()
         raise e
+
+
+def PostFullQuestionSQL(question: Question):
+    try:
+        # register question in database
+        id_question = PostQuestionSQL(question)
+
+        # register answers in database
+        i = 1
+        for answer in question.answers:
+            answer.position = i
+            i += 1
+            PostAnswersSQL(answer, id_question)
+
+        return id_question
+
+    except Exception as e:
+        raise e
 #endregion
 
 #region GET
@@ -265,12 +283,13 @@ def GetHighestQuestionPositionSQL():
 
         result = cur.fetchone()
 
-        db_connection.close()
-
         if result == None:
             raise CustomError(
                 404, "There are probably no Questions at all in the database")
-        return result[0]
+
+        position = result[0]
+        db_connection.close()
+        return position
 
     # exception si il nous manque des paramètres
     except CustomError as e:
@@ -298,8 +317,6 @@ def GetAllParticipationsSQL():
 
         result = cur.fetchall()
 
-        db_connection.close()
-
         if result == None:
             result = []
 
@@ -308,6 +325,8 @@ def GetAllParticipationsSQL():
         for r in result :
             participation = Participation.loadFromDB(r)
             allparticipations.append(participation)
+
+        db_connection.close()
 
         return allparticipations
 
@@ -339,13 +358,13 @@ def GetParticipationByIdSQL(part_id: int):
 
         result = cur.fetchone()
 
-        db_connection.close()
-
         if result == None:
             raise CustomError(
                 404, "There is no Participation with id = "+str(part_id))
 
         particiation = Participation.loadFromDB(result)
+
+        db_connection.close()
 
         return particiation
 
@@ -377,13 +396,13 @@ def GetParticipationByNameSQL(p_name: str):
 
         result = cur.fetchone()
 
-        db_connection.close()
-
         if result == None:
             raise CustomError(
                 404, "There is no Participation for player with name = "+str(p_name))
 
         particiation = Participation.loadFromDB(result)
+
+        db_connection.close()
 
         return particiation
 
@@ -411,12 +430,12 @@ def GetQuestionByIdSQL(question_id: int):
         db_connection.commit()
         result = cur.fetchone()
 
-        db_connection.close()
-
         if result == None:
             raise CustomError(404, "There is no Question with id = "+str(question_id))
 
         question = Question.loadFromDB(result)
+
+        db_connection.close()
 
         return question
 
@@ -439,7 +458,7 @@ def GetFullQuestionByIdSQL(question_id: int):
         return question
     # exception si il nous manque des paramètres
     except CustomError as e:
-        raise e
+        raise CustomError(e.code, e.message)
 
     except Exception as e:
         raise e
@@ -452,7 +471,7 @@ def GetFullQuestionByPositionSQL(position: int):
         return question
     # exception si il nous manque des paramètres
     except CustomError as e:
-        raise e
+        raise CustomError(e.code, e.message)
 
     except Exception as e:
         raise e
@@ -474,8 +493,6 @@ def GetAllQuestionsSQL():
 
         result = cur.fetchall()
 
-        db_connection.close()
-
         if result == None:
             result = []
 
@@ -486,6 +503,8 @@ def GetAllQuestionsSQL():
             all_a = GetAnswersByQuestionIdSQL(q.id)
             q.answers = all_a
             allquestions.append(q)
+
+        db_connection.close()
 
         return allquestions
 
@@ -514,13 +533,14 @@ def GetQuestionByPositionSQL(question_pos: int):
                     (question_pos,))
         db_connection.commit()
         result = cur.fetchone()
-        db_connection.close()
 
         if result == None:
+            print("NO RESULTS\n")
             raise CustomError(
                 404, "There is no Question with position = "+str(question_pos))
 
         question = Question.loadFromDB(result)
+        db_connection.close()
 
         return question
 
@@ -547,12 +567,12 @@ def GetAnswerByIdSQL(answer_id: int):
 
         db_connection.commit()
         result = cur.fetchone()
-        db_connection.close()
 
         if result == None:
             raise CustomError(404, "There is no Answer with id = "+str(answer_id))
 
         answer = Answer.loadFromDB(result)
+        db_connection.close()
 
         return answer
 
@@ -579,9 +599,9 @@ def GetAnswersByQuestionIdSQL(question_id: int):
             "SELECT * FROM Answer WHERE Id_Question = ?", (question_id,))
         db_connection.commit()
         result = cur.fetchall()
-        db_connection.close()
 
         answers = [Answer.loadFromDB(answer) for answer in result]
+        db_connection.close()
 
         return answers
 
@@ -631,6 +651,83 @@ def PutQuestionSQL(question: Question, question_id: int):
         db_connection.rollback()
         db_connection.close()
         raise Exception("Failed to put new question in DB. " + str(e))
+
+
+def PutFullQuestionSQL(question: Question, question_id: int):
+    try:
+        PutQuestionSQL(question, question_id)
+
+        # Delete outdated answers
+        DeleteAnswersSQL(question_id)
+
+        # register answers in database
+        i = 1
+        for answer in question.answers:
+            answer.position = i
+            i += 1
+            PostAnswersSQL(answer, question_id)
+
+    except Exception as e:
+        raise e
+
+
+def IncreasePositionsByOneSQL(min_position: int, max_position: int):
+    try:
+        db_connection = start_connect()
+        cur = db_connection.cursor()
+
+        # start transaction
+        cur.execute("begin")
+
+        if (max_position == None):
+            statement = cur.execute(
+                "UPDATE Question SET Quiz_Position = Quiz_Position+1 WHERE Quiz_Position >= ?", (min_position,))
+            updated = statement.rowcount
+        else:
+            statement = cur.execute(
+                "UPDATE Question SET Quiz_Position = Quiz_Position+1 WHERE Quiz_Position >= ? AND Quiz_Position < ?", (min_position, max_position))
+            updated = statement.rowcount
+
+        # send the request
+        db_connection.commit()
+        db_connection.close()
+
+    except Exception:
+        db_connection.rollback()
+        db_connection.close()
+        raise CustomError(
+            500, "Failed to increase all positions beyond "+int(min_position) + " by 1")
+
+def DecreasePositionsByOneSQL(min_position: int, max_position: int):
+    try:
+        db_connection = start_connect()
+        cur = db_connection.cursor()
+
+        # start transaction
+        cur.execute("begin")
+
+        if (min_position == None):
+            statement = cur.execute(
+                "UPDATE Question SET Quiz_Position = Quiz_Position-1 WHERE Quiz_Position <= ?", (max_position,))
+            updated = statement.rowcount
+        elif (max_position == None):
+            statement = cur.execute(
+                "UPDATE Question SET Quiz_Position = Quiz_Position-1 WHERE Quiz_Position > ?", (min_position,))
+            updated = statement.rowcount
+        else:
+            statement = cur.execute(
+                "UPDATE Question SET Quiz_Position = Quiz_Position-1 WHERE Quiz_Position <= ? AND Quiz_Position > ?", (max_position, min_position))
+            updated = statement.rowcount
+
+        # send the request
+        db_connection.commit()
+        db_connection.close()
+
+    except Exception:
+        db_connection.rollback()
+        db_connection.close()
+        raise CustomError(
+            500, "Failed to increase all positions beyond "+int(min_position) + " by 1")
 #endregion
 
 #region DELETE
