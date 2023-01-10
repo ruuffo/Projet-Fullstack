@@ -1,26 +1,28 @@
 <template>
-    <label>
-        Question:
-        <br />
-        Text: <input type="text" v-model="question.text" /><br />
-        Title: <input type="text" v-model="question.title" /><br />
-        Image: <input type="text" v-model="question.image" /><br />
-        Position: <input type="number" min="1" oninput="validity.valid||(value='')" v-model="question.position" /><br />
-    </label>
-    <br />
-    <div class="answer" v-for="(answer, index) in answers" :key="index">
+    <div v-if="question != null">
         <label>
-            Réponse {{ index + 1 }}:
+            Question:
             <br />
-            Text: <input type="text" v-model="answer.text" /><br />
-            Coche si réponse est correcte: <input type="checkbox" id="checkbox" v-model="answer.isCorrect">
-            <p> </p>
-            <button v-if="index > 0" @click.prevent="removeAnswer(index)">Supprimer Réponse {{ index + 1}}</button>
+            Text: <input type="text" v-model="question.text" /><br />
+            Title: <input type="text" v-model="question.title" /><br />
+            Image: <input type="text" v-model="question.image" /><br />
+            Position: <input type="number" min="1" oninput="validity.valid||(value='')" v-model="question.position" /><br />
         </label>
+        <br />
+        <div class="answer" v-for="(answer, index) in answers" :key="index">
+            <label>
+                Réponse {{ index + 1 }}:
+                <br />
+                Text: <input type="text" v-model="answer.text" /><br />
+                Coche si réponse est correcte: <input type="checkbox" id="checkbox" v-model="answer.isCorrect">
+                <p> </p>
+                <button v-if="index > 0" @click.prevent="removeAnswer(index)">Supprimer Réponse {{ index + 1}}</button>
+            </label>
+        </div>
+        <br />
+        <button @click.prevent="addAnswer">Ajouter une réponse</button>
+        <button @click.prevent="submitQuestion">Envoyer</button>
     </div>
-    <br />
-    <button @click.prevent="addAnswer">Ajouter une réponse</button>
-    <button @click.prevent="submitQuestion">Envoyer</button>
 </template>
 
 <style>
@@ -36,25 +38,29 @@ export default {
     name: "putquestion",
     data() {
         return {
-            question: new Question("", "", "", "", 0, []),
+            question: new Question(),
             answers: []
         };
     },
-    async create() {
+    async created() {
         var position = adminStorageService.getQuestionToDetail();
-        var q = await quizApiService.getQuestion(position)
-        this.question.id = q.id
-        this.question.title = q.title
-        this.question.text = q.text
-        this.question.image = q.image
-        this.question.position = q.position
-
-        for(var a in q.answers){
-            this.question.pa.push(new Answer(a.text, a.isCorrect))
-        }
+        await this.loadQuestionByPosition(position)
         console.log("Question loaded")
+        //this.$forceUpdate()
     },
     methods: {
+        async loadQuestionByPosition(position) {
+            var json = await quizApiService.getQuestion(position)
+            this.question.position = position
+            this.question.title = json.data.title
+            this.question.text = json.data.text
+            this.question.image = json.data.image
+            this.question.id = json.data.id
+
+            for(var a in json.data.possibleAnswers){
+                this.answers.push(new Answer(a.text, a.isCorrect))
+            }
+        },
         addAnswer() {
             this.answers.push(new Answer(null,null));
         },
