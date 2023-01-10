@@ -36,15 +36,23 @@ export default {
     name: "putquestion",
     data() {
         return {
-            question: null,
+            question: new Question("", "", "", "", 0, []),
             answers: []
         };
     },
     async create() {
         var position = adminStorageService.getQuestionToDetail();
         var q = await quizApiService.getQuestion(position)
-        this.question = new Question(q.id, q.text, q.title, q.image, q.position, q.answers)
-        console.log("Question : " + this.question.text)
+        this.question.id = q.id
+        this.question.title = q.title
+        this.question.text = q.text
+        this.question.image = q.image
+        this.question.position = q.position
+
+        for(var a in q.answers){
+            this.question.pa.push(new Answer(a.text, a.isCorrect))
+        }
+        console.log("Question loaded")
     },
     methods: {
         addAnswer() {
@@ -83,9 +91,6 @@ export class Question {
         this.image = im;
         this.position = po;
         this.possibleAnswers = [];
-        for (var a in pa) {
-            this.possibleAnswers.push(new Answer(a.text, a.isCorrect));
-        }
     }
 
 }
