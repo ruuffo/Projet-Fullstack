@@ -1,4 +1,5 @@
 <template>
+    <button @click.prevent="goBack">Back</button><br><br>
     <div v-if="question != null">
         <label>
             Question:
@@ -61,6 +62,9 @@ export default {
             for(var a in json.data.possibleAnswers){
                 this.answers.push(new Answer(a.text, a.isCorrect))
             }
+        },
+        goBack() {
+            this.$router.push('/questiondetail');
         },
         addAnswer() {
             this.answers.push(new Answer(null,null));

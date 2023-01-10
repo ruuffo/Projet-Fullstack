@@ -1,4 +1,5 @@
 <template>
+    <button @click.prevent="goBack">Back</button><br><br>
     <label>
       Question:
       <br />
@@ -43,6 +44,9 @@ export default {
   methods: {
     addAnswer() {
       this.answers.push(new Answer());
+    },
+    goBack() {
+      this.$router.push('/admintools');
     },
     removeAnswer(index) {
       this.answers.splice(index, 1);
