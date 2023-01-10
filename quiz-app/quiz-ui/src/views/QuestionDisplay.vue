@@ -1,5 +1,4 @@
 <template>
-
     <body>
         <div class="question">
             <h1>{{ question.questionTitle }}</h1>

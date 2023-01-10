@@ -1,5 +1,4 @@
 <template>
-
   <body>
     <div class="score">
       <h1>{{ playerName }}, Votre dernier score est: {{ score }} </h1>
@@ -26,11 +25,6 @@ export default {
       registeredScores: []
     }
   },
-  methods: {
-    goHome() {
-      this.$router.push('/');
-    }
-  },
   async created() {
     console.log("Composant Score 'created'")
     this.playerName = participationStorageService.getPlayerName()
@@ -46,6 +40,11 @@ export default {
     }
     this.classement = rank
     this.classement += (rank === 1) ? "er" : "eme"
+  },
+  methods: {
+    goHome() {
+      this.$router.push('/');
+    }
   }
 }
 

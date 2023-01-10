@@ -43,6 +43,7 @@ export default {
         };
     },
     async created() {
+        console.log("Composant Put Question Page 'created'")
         var position = adminStorageService.getQuestionToDetail();
         await this.loadQuestionByPosition(position)
         console.log("Question loaded")

@@ -25,6 +25,12 @@ export default {
             answers: []
         }
     },
+    async created() {
+        console.log("Composant QuestionManager 'created'")
+        this.loadQuestionByPosition(this.currentQuestionPosition)
+        var json = await quizApiService.getQuizInfo()
+        this.totalNumberOfQuestion = json.data.size
+    },
     components: {
         QuestionDisplay
     },
@@ -52,12 +58,6 @@ export default {
             participationStorageService.saveParticipationScore(this.score)
             this.$router.push('/score');
         }
-    },
-    async created() {
-        console.log("Composant QuestionManager 'created'")
-        this.loadQuestionByPosition(this.currentQuestionPosition)
-        var json = await quizApiService.getQuizInfo()
-        this.totalNumberOfQuestion = json.data.size
     }
 }
 

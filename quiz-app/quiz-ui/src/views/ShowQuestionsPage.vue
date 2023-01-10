@@ -18,24 +18,6 @@
   </form>
 </template>
 
-<style>
-.answer:not(:first-child) {
-  margin-top: 1rem;
-}
-
-.question-image {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.question-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-</style>
-
 <script>
 import quizApiService from "@/services/QuizApiService";
 import adminStorageService from "@/services/AdminStorage";
@@ -93,3 +75,21 @@ export class Answer {
 
 }
 </script>
+
+<style>
+.answer:not(:first-child) {
+  margin-top: 1rem;
+}
+
+.question-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.question-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+</style>

@@ -51,14 +51,6 @@ export default {
 
       this.question.possibleAnswers = this.answers;
 
-      // var test = {
-      //   "text": "test",
-      //   "title": "test",
-      //   "image": "test",
-      //   "position": 12,
-      //   "possibleAnswers":[]
-      // }
-
       var token = await adminStorageService.getToken();
 7
       var response = await quizApiService.addQuestion(token, this.question);

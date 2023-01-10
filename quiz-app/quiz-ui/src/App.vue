@@ -14,7 +14,6 @@ function isConnected() {
         <RouterLink v-if="!isConnected()" :key="$route.fullPath" to="/login">Login</RouterLink>
         <RouterLink v-if="isConnected()" :key="$route.fullPath" to="/disconnect">Disconnect</RouterLink>
         <RouterLink to="/admintools">Tools</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
       </nav>
     </div>
   </header>
