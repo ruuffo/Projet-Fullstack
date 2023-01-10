@@ -11,7 +11,8 @@
     </div>
     <br>
     <br>
-      <button @click.prevent="gotoUpdatePage">Go to update this question</button>
+      <button @click.prevent="gotoUpdatePage">Go to update this question</button><br>
+      <button @click.prevent="deleteQuestion">Delete this question</button><br>
 </template>
 
 <script>
@@ -26,7 +27,8 @@ export default {
                 questionText: '',
                 questionImage: '',
                 possibleAnswers: [],
-                questionPosition: 1
+                questionPosition: 1,
+                questionId: 1
             }
         }
   },
@@ -37,15 +39,23 @@ export default {
   },
   methods: {
     async loadQuestionByPosition(position) {
-            var json = await quizApiService.getQuestion(position)
-            this.question.questionPosition = position
-            this.question.questionTitle = json.data.questionTitle
-            this.question.questionText = json.data.text
-            this.question.questionImage = json.data.image
-            this.question.possibleAnswers = json.data.possibleAnswers
+        var json = await quizApiService.getQuestion(position)
+        this.question.questionPosition = position
+        this.question.questionTitle = json.data.questionTitle
+        this.question.questionText = json.data.text
+        this.question.questionImage = json.data.image
+        this.question.possibleAnswers = json.data.possibleAnswers
+        this.question.questionId = json.data.id
     },
     gotoUpdatePage() {
       this.$router.push('/putquestion');
+    },
+    async deleteQuestion() {
+      var token = await adminStorageService.getToken();
+      var response = await quizApiService.deleteQuestion(token, this.question.questionId);
+      console.log("Deleted question at position " + this.question.questionPosition + "\nWith ID = " + this.question.questionId + "\nResponse:\n" + JSON.stringify(response));
+
+      this.$router.push('/showquestions');
     }
   }
 };

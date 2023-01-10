@@ -10,7 +10,7 @@ import DisconnectPage from '../views/Disconnect.vue'
 import QuestionDetailPage from '../views/QuestionDetail.vue'
 import PageNotFound from '../views/PageNotFound.vue'
 import PostQuestionPage from '../views/PostQuestionPage.vue'
-import PutQuestionPage from '../views/PostQuestionPage.vue'
+import PutQuestionPage from '../views/PutQuestionPage.vue'
 import ShowQuestionsPage from '../views/ShowQuestionsPage.vue'
 
 const router = createRouter({

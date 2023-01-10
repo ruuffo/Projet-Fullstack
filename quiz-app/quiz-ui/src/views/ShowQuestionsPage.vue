@@ -58,10 +58,10 @@ export default {
     removeAnswer(index) {
       this.answers.splice(index, 1);
     },
-    showDetails(position){
-    adminStorageService.setQuestionToDetail(position)
-    this.$router.push('/questiondetail');
-  }
+    showDetails(position) {
+      adminStorageService.setQuestionToDetail(position)
+      this.$router.push('/questiondetail');
+    }
   },
 };
 

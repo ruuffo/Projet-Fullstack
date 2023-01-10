@@ -53,8 +53,12 @@ export default {
         return this.call("post", "questions", json, token);
     },
     updateQuestion(token, json) {
-        console.log("Replace Question with token : \n" + token + "\n\nJSON :\n" + JSON.stringify(json))
-        return this.call("put", "questions/"+json.id, json, token);
+        console.log("Update Question with token : \n" + token + "\n\nJSON :\n" + JSON.stringify(json))
+        return this.call("put", "questions/" + json.id, json, token);
+    },
+    deleteQuestion(token, q_id) {
+        console.log("Delete Question with token : \n" + token + "\n\nID :\n" + q_id)
+        return this.call("delete", "questions/" + q_id, null, token);
     },
     getAllQuestions(token, json) {
         console.log("Getting all questions")
