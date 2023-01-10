@@ -2,7 +2,7 @@
     <br><button @click.prevent="deleteAll">Delete all Questions</button><br><br><br>
 
     <label>
-      <b>List of question:</b>
+      <b>List of {{ totalNumberOfQuestion }} question:</b>
       <br />
     </label>
 
@@ -25,7 +25,8 @@ export default {
   name: "showquestions",
   data() {
     return {
-      all_questions: []
+      all_questions: [],
+      totalNumberOfQuestion: 1
     };
   },
   async created() {
@@ -46,9 +47,12 @@ export default {
       adminStorageService.setQuestionToDetail(position)
       this.$router.push('/questiondetail');
     },
-    async loadQuestions(){
-      var json = await quizApiService.getAllQuestions()
+    async loadQuestions() {
+      var json = await quizApiService.getQuizInfo()
+      this.totalNumberOfQuestion = json.data.size
+      json = await quizApiService.getAllQuestions()
       this.all_questions = json.data
+
     }
   },
 };
