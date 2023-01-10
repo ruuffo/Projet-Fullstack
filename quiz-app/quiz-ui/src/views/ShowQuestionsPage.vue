@@ -1,7 +1,8 @@
 <template>
-  <form @submit="submitForm">
+    <br><button @click.prevent="deleteAll">Delete all Questions</button><br><br><br>
+
     <label>
-      List of question:
+      <b>List of question:</b>
       <br />
     </label>
 
@@ -15,7 +16,6 @@
         <br /><br />
       </label>
     </div>
-  </form>
 </template>
 
 <script>
@@ -30,19 +30,25 @@ export default {
   },
   async created() {
     console.log("Composant Show questions page 'created'")
-    var json = await quizApiService.getAllQuestions()
-    this.all_questions = json.data
+    this.loadQuestions()
   },
   methods: {
     addAnswer() {
       this.answers.push(new Answer());
     },
-    removeAnswer(index) {
-      this.answers.splice(index, 1);
+    async deleteAll() {
+      var token = await adminStorageService.getToken();
+      var response = await quizApiService.deleteAllQuestion(token);
+      console.log("Deleted All Questions.\nResponse:\n" + JSON.stringify(response));
+      this.loadQuestions()
     },
     showDetails(position) {
       adminStorageService.setQuestionToDetail(position)
       this.$router.push('/questiondetail');
+    },
+    async loadQuestions(){
+      var json = await quizApiService.getAllQuestions()
+      this.all_questions = json.data
     }
   },
 };

@@ -60,6 +60,10 @@ export default {
         console.log("Delete Question with token : \n" + token + "\n\nID :\n" + q_id)
         return this.call("delete", "questions/" + q_id, null, token);
     },
+    deleteAllQuestion(token){
+        console.log("Deleting all Questions with token : \n" + token + "\n")
+        return this.call("delete", "questions/all", null, token);
+    },
     getAllQuestions(token, json) {
         console.log("Getting all questions")
         return this.call("get", "questions/all");

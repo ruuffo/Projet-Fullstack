@@ -13,6 +13,7 @@
     <br>
       <button @click.prevent="gotoUpdatePage">Go to update this question</button><br>
       <button @click.prevent="deleteQuestion">Delete this question</button><br>
+      <button @click.prevent="goBack">Back</button><br>
 </template>
 
 <script>
@@ -49,6 +50,9 @@ export default {
     },
     gotoUpdatePage() {
       this.$router.push('/putquestion');
+    },
+    goBack() {
+      this.$router.push('/showquestions');
     },
     async deleteQuestion() {
       var token = await adminStorageService.getToken();
