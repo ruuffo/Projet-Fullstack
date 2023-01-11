@@ -67,5 +67,9 @@ export default {
     getAllQuestions(token, json) {
         console.log("Getting all questions")
         return this.call("get", "questions/all");
+    },
+    rebuildDB(token) {
+        console.log("Rebuilding database")
+        return this.call("post", "rebuild-db", null, token);
     }
 };
