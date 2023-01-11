@@ -48,7 +48,6 @@ export default {
       if(confirm("Do you wish to rebuild the database ? (Useless if the tables already exist)")){
         await quizApiService.rebuildDB(this.token)
         this.db_rebuilt = true;
-        this.$forceUpdate();
       }
     },
   }
