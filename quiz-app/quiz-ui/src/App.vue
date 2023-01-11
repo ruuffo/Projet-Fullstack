@@ -7,15 +7,14 @@ function isConnected() {
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink v-if="!isConnected()" :key="$route.fullPath" to="/login">Login</RouterLink>
-        <RouterLink v-if="isConnected()" :key="$route.fullPath" to="/disconnect">Disconnect</RouterLink>
-        <RouterLink to="/admintools">Tools</RouterLink>
+  <header class="w-100">
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <RouterLink class="nav-item nav-link active" to="/">Home</RouterLink>
+        <RouterLink class="nav-item nav-link active"  v-if="!isConnected()" :key="$route.fullPath" to="/login">Login</RouterLink>
+        <RouterLink class="nav-item nav-link active" v-if="isConnected()" :key="$route.fullPath" to="/disconnect">Disconnect</RouterLink>
+        <RouterLink class="nav-item nav-link active" to="/about">About</RouterLink>
+        <RouterLink class="nav-item nav-link active" to="/admintools">Tools</RouterLink>
       </nav>
-    </div>
   </header>
   <RouterView />
 </template>
@@ -24,6 +23,10 @@ function isConnected() {
 nav {
   display: flex;
   align-items: center;
+}
+
+header{
+  height: fit-content;
 }
 
 nav a {

@@ -6,6 +6,7 @@ import AdminToolsPage from '../views/AdminToolsPage.vue'
 import QuestionManager from '../views/QuestionManager.vue'
 import ScorePage from '../views/ScorePage.vue'
 import DisconnectPage from '../views/Disconnect.vue'
+import AboutView from '../views/AboutView.vue'
 import QuestionDetailPage from '../views/QuestionDetail.vue'
 import PageNotFound from '../views/PageNotFound.vue'
 import PostQuestionPage from '../views/PostQuestionPage.vue'
@@ -18,7 +19,10 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomePage
+      component: HomePage,
+      meta: {
+        title: 'Super Quiz'
+      }
     },
     {
       path: '/admintools',
@@ -26,57 +30,95 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: AdminToolsPage
+      component: AdminToolsPage,
+      meta: {
+        title: 'Administration'
+      }
     },
     {
       path: '/newquiz',
       name: 'newquiz',
-      component: NewQuizPage
+      component: NewQuizPage,
+      meta: {
+        title: 'Démarrer le quiz'
+      }
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: AboutView,
+      meta: {
+        title: 'A propos'
+      }
     },
     {
       path: '/login',
       name: 'login',
-      component: LoginPage
+      component: LoginPage,
+      meta: {
+        title: 'Connexion'
+      }
     },
     {
       path: '/quiz',
       name: 'quiz',
-      component: QuestionManager
+      component: QuestionManager,
+      meta: {
+        title: 'Quiz'
+      }
     },
     {
       path: '/postquestion',
       name: 'postquestion',
-      component: PostQuestionPage
+      component: PostQuestionPage,
+      meta: {
+        title: 'Ajouter une question'
+      }
     },
     {
       path: '/putquestion',
       name: 'putquestion',
-      component: PutQuestionPage
+      component: PutQuestionPage,
+      meta: {
+        title: 'Modifier une question'
+      }
     },
     {
       path: '/score',
       name: 'score',
-      component: ScorePage
+      component: ScorePage,
+      meta: {
+        title: 'Resultat'
+      }
     },
     {
       path: '/showquestions',
       name: 'showquestions',
-      component: ShowQuestionsPage
+      component: ShowQuestionsPage,
+      meta: {
+        title: 'Liste des questions'
+      }
     },
     {
       path: '/disconnect',
       name: 'disconnect',
-      component: DisconnectPage
+      component: DisconnectPage,
     },
     {
       path: '/questiondetail',
       name: 'questiondetail',
-      component: QuestionDetailPage
+      component: QuestionDetailPage,
+      meta: {
+        title: 'Détail de la question'
+      }
     },
     {
       path: '/:catchAll(.*)*',
       name: "PageNotFound",
-      component: PageNotFound
+      component: PageNotFound,
+      meta: {
+        title: 'Erreur 404: Not Found'
+      }
     },
 
   ]

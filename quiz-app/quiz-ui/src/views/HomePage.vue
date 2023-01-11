@@ -1,14 +1,13 @@
 <template>
 
   <body>
-    <h1>Super QUIZ</h1>
+    <div class="d-flex flex-column mainblock">
+      <h1>le Super QUIZ</h1>
     <div class="container">
       <h2>Top 10 des scores :</h2>
 
-      <div v-for="(scoreEntry, index) in registeredScores" v-bind:key="scoreEntry.date">
-        <div v-if="index < 10">
-          {{ scoreEntry.playerName }} - {{ scoreEntry.score }}
-        </div>
+      <div v-for="(scoreEntry, index) in registeredScores" v-bind:key="scoreEntry.date" v-if="index < 10">
+        {{ scoreEntry.playerName }} - {{ scoreEntry.score }}
       </div>
       <br>
       <button>
@@ -16,6 +15,7 @@
           <div class="bt">Participer au quiz</div>
         </router-link>
       </button>
+    </div>
     </div>
   </body>
 </template>
@@ -48,15 +48,8 @@ export default {
   font-size: larger;
 }
 
-h1 {
-  font-size: 2em;
-  margin-bottom: 0.5em;
-}
-
-h2 {
-  font-size: 1.5em;
-  margin-top: 0;
-  margin-bottom: 0.5em;
+.mainblock{
+  font-size: 1em;
 }
 
 .bt {
