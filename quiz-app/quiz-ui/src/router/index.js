@@ -18,86 +18,56 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomePage,
-      meta: {
-        title: 'Super Quiz'
-      }
+      name: 'Super Quiz',
+      component: HomePage
     },
     {
       path: '/admintools',
-      name: 'admintools',
+      name: 'Administration',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: AdminToolsPage,
-      meta: {
-        title: 'Administration'
-      }
+      component: AdminToolsPage
     },
     {
       path: '/newquiz',
-      name: 'newquiz',
-      component: NewQuizPage,
-      meta: {
-        title: 'Démarrer le quiz'
-      }
+      name: 'Commencer le quiz',
+      component: NewQuizPage
     },
     {
       path: '/about',
-      name: 'about',
-      component: AboutView,
-      meta: {
-        title: 'A propos'
-      }
+      name: 'A propos',
+      component: AboutView
     },
     {
       path: '/login',
-      name: 'login',
-      component: LoginPage,
-      meta: {
-        title: 'Connexion'
-      }
+      name: 'Connexion',
+      component: LoginPage
     },
     {
       path: '/quiz',
-      name: 'quiz',
-      component: QuestionManager,
-      meta: {
-        title: 'Quiz'
-      }
+      name: 'Quiz',
+      component: QuestionManager
     },
     {
       path: '/postquestion',
-      name: 'postquestion',
-      component: PostQuestionPage,
-      meta: {
-        title: 'Ajouter une question'
-      }
+      name: 'Ajouter une question',
+      component: PostQuestionPage
     },
     {
       path: '/putquestion',
-      name: 'putquestion',
-      component: PutQuestionPage,
-      meta: {
-        title: 'Modifier une question'
-      }
+      name: 'Modifier une question',
+      component: PutQuestionPage
     },
     {
       path: '/score',
-      name: 'score',
-      component: ScorePage,
-      meta: {
-        title: 'Resultat'
-      }
+      name: 'Score',
+      component: ScorePage
     },
     {
       path: '/showquestions',
-      name: 'showquestions',
-      component: ShowQuestionsPage,
-      meta: {
-        title: 'Liste des questions'
-      }
+      name: 'Liste des questions',
+      component: ShowQuestionsPage
     },
     {
       path: '/disconnect',
@@ -106,22 +76,21 @@ const router = createRouter({
     },
     {
       path: '/questiondetail',
-      name: 'questiondetail',
-      component: QuestionDetailPage,
-      meta: {
-        title: 'Détail de la question'
-      }
+      name: 'Détail de la question',
+      component: QuestionDetailPage
     },
     {
       path: '/:catchAll(.*)*',
-      name: "PageNotFound",
-      component: PageNotFound,
-      meta: {
-        title: 'Erreur 404: Not Found'
-      }
+      name: "Erreur 404: page not found",
+      component: PageNotFound
     },
 
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  document.title = to.name;
+  next();
+});
 
 export default router

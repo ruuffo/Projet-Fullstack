@@ -1,24 +1,23 @@
 <template>
 
   <body>
-    <div class="container">
+    <div class="d-flex flex-column gap-3">
       <h1>Adiminstrator Tools</h1>
-
       <div v-if="token != ''">
         <p>Choisissez une option :</p>
-        <button @click="rebuildDB"> Rebuild database </button><br />
-        <div v-if="db_rebuilt == true">
-          Rebuilt database !
+        <div class="d-flex flex-column gap-3">
+          <button @click="rebuildDB"> Rebuild database </button><br />
+          <div v-if="db_rebuilt == true">
+            Rebuilt database !
+          </div>
+          <button @click="gotoPostQuestionPage">Add a new question</button><br />
+          <button @click="gotoShowQuestionsPage"> Show all questions </button><br />
         </div>
-        <button @click="gotoPostQuestionPage">Add a new question</button><br />
-        <button @click="gotoShowQuestionsPage"> Show all questions </button><br />
       </div>
-
       <div v-else>
         <p>You are not logged in !</p>
         <button @click="gotoLoginPage"> Go to login page </button><br/>
       </div>
-
     </div>
   </body>
 </template>

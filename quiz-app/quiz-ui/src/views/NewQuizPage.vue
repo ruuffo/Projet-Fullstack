@@ -1,11 +1,10 @@
 <template>
   <body>
-    <div>
-      <table style="text-align: center;">
-        <tr><h2>Saisissez votre nom :</h2></tr>
-        <tr><input type="text" placeholder="Username" v-model="username"></tr>
-        <tr><button @click="launchNewQuiz">GO!</button></tr>
-      </table>
+    <div class="d-flex flex-column gap-2">
+        <h2>Saisissez votre nom :</h2>
+        <br>
+        <input type="text" placeholder="Username" v-model="username">
+        <button @click="launchNewQuiz"> Commencer</button>
     </div>
   </body>
 </template>
@@ -29,3 +28,6 @@ export default {
 }
 
 </script>
+
+<style>
+</style>

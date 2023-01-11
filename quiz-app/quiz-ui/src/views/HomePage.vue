@@ -9,10 +9,9 @@
       <div v-for="(scoreEntry, index) in registeredScores" v-bind:key="scoreEntry.date" v-if="index < 10">
         {{ scoreEntry.playerName }} - {{ scoreEntry.score }}
       </div>
-      <br>
-      <button>
+      <button class="bt">
         <router-link to="/newquiz">
-          <div class="bt">Participer au quiz</div>
+          Participer au quiz
         </router-link>
       </button>
     </div>

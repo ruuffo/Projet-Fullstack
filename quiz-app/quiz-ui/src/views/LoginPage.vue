@@ -1,9 +1,8 @@
 <template>
 
   <body>
-    <div class="container">
-      <h1>Administrator login</h1>
-      <div>
+      <div class="d-flex flex-column gap-3">
+        <h1>Administrator login</h1>
         <p>Saisissez votre mot de passe :</p>
         <input type="password" placeholder="Password" v-model="password">
 
@@ -13,7 +12,6 @@
           {{ errormessage }}
         </div>
       </div>
-    </div>
   </body>
 </template>
 
@@ -66,7 +64,6 @@ h1 {
 
 input {
   display: block;
-  width: 80%;
   margin: 0 auto;
   padding: 0.5em;
   font-size: 1em;
