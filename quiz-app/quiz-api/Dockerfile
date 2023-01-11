@@ -4,7 +4,7 @@ FROM python:3.10-alpine
 # Création et positionnement du répertoire par défaut dans le container
 WORKDIR /app
 
-# Copie du fichier requirements local (machine hôte) vers le container 
+# Copie du fichier requirements local (machine hôte) vers le container
 # (répertoire /app, car il s'agit du WORKDIR)
 COPY requirements.txt requirements.txt
 

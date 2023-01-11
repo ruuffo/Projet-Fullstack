@@ -1,4 +1,3 @@
 venv
 __pycache__
-bdd.db
-bdd.db-journal
+quiz.db

@@ -5,7 +5,7 @@ from mapping import *
 
 # create a connection
 def start_connect():
-    db_connection = sqlite3.connect("bdd.db")
+    db_connection = sqlite3.connect("quiz.db")
     db_connection.isolation_level = None
     return db_connection
 
