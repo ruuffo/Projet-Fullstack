@@ -1,21 +1,31 @@
 <template>
-    <br><button @click.prevent="deleteAll">Delete all Questions</button><br><br><br>
 
-    <label>
-      <b>List of {{ totalNumberOfQuestion }} question:</b>
-      <br />
-    </label>
+    <div style="text-align: center">
+      <button @click.prevent="goBack">Back</button><br><br>
+      <button @click.prevent="deleteAll">Delete all Questions</button><br><br><br>
 
-    <div class="answer" v-for="question in all_questions">
-      <label>
-        <img v-if="question.image" :src="question.image" class="question-image" alt="Question image" />
-        <br />
-        Question {{ question.position }}<br />
-        <span class="question-title" :title="question.title">{{ question.title }}</span>
-        <br><button @click.prevent="showDetails(question.position)">Details</button>
-        <br /><br />
-      </label>
     </div>
+
+    <table style="text-align: center">
+      <tr>
+        <label>
+          <h2><b>List of {{ totalNumberOfQuestion }} question:</b></h2>
+          <br><br><br>
+        </label>
+      </tr>
+      <tr>
+        <div class="answer" v-for="question in all_questions">
+          <label>
+            <img v-if="question.image" :src="question.image" class="question-image" alt="Question image" />
+            <br />
+            Question {{ question.position }}<br />
+            <span class="question-title" :title="question.title">{{ question.title }}</span>
+            <br><button @click.prevent="showDetails(question.position)">Details</button>
+            <br /><br />
+          </label>
+        </div>
+      </tr>
+    </table>
 </template>
 
 <script>
@@ -37,11 +47,17 @@ export default {
     addAnswer() {
       this.answers.push(new Answer());
     },
+    goBack() {
+      this.$router.push('/admintools');
+    },
     async deleteAll() {
-      var token = await adminStorageService.getToken();
-      var response = await quizApiService.deleteAllQuestion(token);
-      console.log("Deleted All Questions.\nResponse:\n" + JSON.stringify(response));
-      this.loadQuestions()
+      if(confirm("Do you really want to delete ALL questions ?"))
+      {
+        var token = await adminStorageService.getToken();
+        var response = await quizApiService.deleteAllQuestion(token);
+        console.log("Deleted All Questions.\nResponse:\n" + JSON.stringify(response));
+        this.loadQuestions()
+      }
     },
     showDetails(position) {
       adminStorageService.setQuestionToDetail(position)

@@ -19,6 +19,7 @@ function isConnected() {
   </header>
   <RouterView />
 </template>
+
 <style>
 nav {
   display: flex;

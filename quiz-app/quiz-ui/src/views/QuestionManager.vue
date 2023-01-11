@@ -1,7 +1,9 @@
 <template>
-    <div class="question">
-        <h1>Question {{ currentQuestionPosition }} / {{ totalNumberOfQuestion }}</h1>
-        <QuestionDisplay :question="currentQuestion" @answerSelected="answerClickedHandler" />
+    <div>
+        <table style="text-align: center;">
+            <tr><h1>Question {{ currentQuestionPosition }} / {{ totalNumberOfQuestion }}</h1></tr>
+            <tr><QuestionDisplay :question="currentQuestion" @answerSelected="answerClickedHandler" /></tr>
+        </table>
     </div>
 </template>
 

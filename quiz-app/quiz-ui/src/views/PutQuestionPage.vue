@@ -1,29 +1,29 @@
 <template>
-    <button @click.prevent="goBack">Back</button><br><br>
-    <div v-if="question != null">
-        <label>
-            Question:
-            <br />
-            Text: <input type="text" v-model="question.text" /><br />
-            Title: <input type="text" v-model="question.title" /><br />
-            Image: <input type="text" v-model="question.image" /><br />
-            Position: <input type="number" min="1" oninput="validity.valid||(value='')" v-model="question.position" /><br />
-        </label>
-        <br />
-        <div class="answer" v-for="(answer, index) in answers" :key="index">
+    <table style="text-align:center">
+        <button @click.prevent="goBack">Back</button><br><br>
+        <div v-if="question != null">
             <label>
-                Réponse {{ index + 1 }}:
-                <br />
-                Text: <input type="text" v-model="answer.text" /><br />
-                Coche si réponse est correcte: <input type="checkbox" id="checkbox" v-model="answer.isCorrect">
-                <p> </p>
-                <button v-if="index > 0" @click.prevent="removeAnswer(index)">Supprimer Réponse {{ index + 1}}</button>
+                <h2>Question:</h2>
+                Text: <input type="text" v-model="question.text" /><br />
+                Title: <input type="text" v-model="question.title" /><br />
+                Image: <input type="text" v-model="question.image" /><br />
+                Position: <input type="number" min="1" oninput="validity.valid||(value='')" v-model="question.position" /><br />
             </label>
+            <br />
+            <div class="answer" v-for="(answer, index) in answers" :key="index">
+                <label>
+                    <h3>Réponse {{ index + 1 }}:</h3>
+                    Text: <input type="text" v-model="answer.text" /><br />
+                    Cocher si réponse est correcte: <input type="checkbox" id="checkbox" v-model="answer.isCorrect">
+                    <p> </p>
+                    <button v-if="index > 0" @click.prevent="removeAnswer(index)">Supprimer Réponse {{ index + 1}}</button>
+                </label>
+            </div>
+            <br />
+            <tr><button @click.prevent="addAnswer">Ajouter une réponse</button></tr>
+            <tr><button @click.prevent="submitQuestion">Envoyer</button></tr>
         </div>
-        <br />
-        <button @click.prevent="addAnswer">Ajouter une réponse</button>
-        <button @click.prevent="submitQuestion">Envoyer</button>
-    </div>
+    </table>
 </template>
 
 <style>
@@ -73,16 +73,16 @@ export default {
             this.answers.splice(index, 1);
         },
         async submitQuestion() {
+            if (confirm("Submit this question ?")) {
+                this.question.possibleAnswers = this.answers;
 
-            this.question.possibleAnswers = this.answers;
+                var token = await adminStorageService.getToken();
 
-            var token = await adminStorageService.getToken();
+                var response = await quizApiService.updateQuestion(token, this.question);
+                console.log("Update a question with JSON :\n" + JSON.stringify(this.question) + "\n\nResponse:\n" + JSON.stringify(response));
 
-            var response = await quizApiService.updateQuestion(token, this.question);
-            console.log("Update a question with JSON :\n" + JSON.stringify(this.question) + "\n\nResponse:\n" + JSON.stringify(response));
-
-            this.$router.push('/showquestions');
-
+                this.$router.push('/showquestions');
+            }
         },
     },
 };

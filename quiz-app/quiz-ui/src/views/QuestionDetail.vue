@@ -1,19 +1,21 @@
 <template>
+  <table style="text-align: center">
       <h1>Question n°{{question.questionPosition}}:</h1>
       <br>
       <p class="question-title"> {{question.questionTitle}} </p>
       <p class="question-title"> {{question.questionText}} </p>
       <img v-if="question.questionImage" :src="question.questionImage" class="question-image" />
-    <br>
-    <h1>Reponses:</h1><br>
-    <div v-for="answer in question.possibleAnswers">
-      <p>{{ answer.text }}</p>
-    </div>
-    <br>
-    <br>
+      <br>
+      <h1>Reponses:</h1><br>
+      <div v-for="answer in question.possibleAnswers">
+        <p>{{ answer.text }}</p>
+      </div>
+      <br>
+      <br>
       <button @click.prevent="gotoUpdatePage">Go to update this question</button><br>
       <button @click.prevent="deleteQuestion">Delete this question</button><br>
       <button @click.prevent="goBack">Back</button><br>
+    </table>
 </template>
 
 <script>
@@ -55,11 +57,13 @@ export default {
       this.$router.push('/showquestions');
     },
     async deleteQuestion() {
-      var token = await adminStorageService.getToken();
-      var response = await quizApiService.deleteQuestion(token, this.question.questionId);
-      console.log("Deleted question at position " + this.question.questionPosition + "\nWith ID = " + this.question.questionId + "\nResponse:\n" + JSON.stringify(response));
+      if (confirm("Do you really want to delete this question ?")) {
+        var token = await adminStorageService.getToken();
+        var response = await quizApiService.deleteQuestion(token, this.question.questionId);
+        console.log("Deleted question at position " + this.question.questionPosition + "\nWith ID = " + this.question.questionId + "\nResponse:\n" + JSON.stringify(response));
 
-      this.$router.push('/showquestions');
+        this.$router.push('/showquestions');
+      }
     }
   }
 };

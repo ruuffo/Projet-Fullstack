@@ -3,10 +3,12 @@
   <body>
     <h1>Super QUIZ</h1>
     <div class="container">
-      <h2>Resultats :</h2>
+      <h2>Top 10 des scores :</h2>
 
-      <div v-for="scoreEntry in registeredScores" v-bind:key="scoreEntry.date">
-        {{ scoreEntry.playerName }} - {{ scoreEntry.score }}
+      <div v-for="(scoreEntry, index) in registeredScores" v-bind:key="scoreEntry.date">
+        <div v-if="index < 10">
+          {{ scoreEntry.playerName }} - {{ scoreEntry.score }}
+        </div>
       </div>
       <br>
       <button>

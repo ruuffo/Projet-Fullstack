@@ -3,11 +3,13 @@
     <div class="score">
       <h1>{{ playerName }}, Votre dernier score est: {{ score }} </h1>
       <p> Vous êtes {{ classement }} dans le classement ! </p>
-      <h2>Classement des scores globaux:</h2>
-      <div v-for="scoreEntry in registeredScores" v-bind:key="scoreEntry.date">
-        {{ scoreEntry.playerName }} - {{ scoreEntry.score }}
+      <h2>Top 10 des scores globaux:</h2>
+      <div v-for="(scoreEntry, index) in registeredScores" :key="index" v-bind:key="scoreEntry.date" >
+        <div v-if="index < 10">
+          {{ scoreEntry.playerName }} - {{ scoreEntry.score }}
+        </div>
       </div>
-      <button @click="goHome">retour à la page d'accueil</button>
+      <button @click="goHome">Retour à la page d'accueil</button>
     </div>
   </body>
 </template>

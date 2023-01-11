@@ -1,10 +1,11 @@
 <template>
-
   <body>
-    <div class="name">
-      <p>Saisissez votre nom :</p>
-      <input type="text" placeholder="Username" v-model="username">
-      <button @click="launchNewQuiz">GO!</button>
+    <div>
+      <table style="text-align: center;">
+        <tr><h2>Saisissez votre nom :</h2></tr>
+        <tr><input type="text" placeholder="Username" v-model="username"></tr>
+        <tr><button @click="launchNewQuiz">GO!</button></tr>
+      </table>
     </div>
   </body>
 </template>
