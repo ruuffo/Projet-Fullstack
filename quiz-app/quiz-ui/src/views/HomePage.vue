@@ -1,19 +1,24 @@
 <template>
 
   <body>
-    <div class="d-flex flex-column mainblock">
+    <div class="d-flex flex-column mainblock gap-3">
       <h1>le Super QUIZ</h1>
     <div class="container">
       <h2>Top 10 des scores :</h2>
 
-      <div v-for="(scoreEntry, index) in registeredScores" v-bind:key="scoreEntry.date" v-if="index < 10">
-        {{ scoreEntry.playerName }} - {{ scoreEntry.score }}
+      <div v-for="(scoreEntry, index) in registeredScores" v-bind:key="scoreEntry.date">
+        <div v-if="index < 10">
+          {{ scoreEntry.playerName }} - {{ scoreEntry.score }}
+        </div>
       </div>
-      <button class="bt">
+      <br>
+      <div class="bt">
+        <button>
         <router-link to="/newquiz">
           Participer au quiz
         </router-link>
       </button>
+      </div>
     </div>
     </div>
   </body>
