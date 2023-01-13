@@ -12,9 +12,11 @@
       </div>
       <br>
       <br>
-      <button @click.prevent="gotoUpdatePage">Go to update this question</button><br>
-      <button @click.prevent="deleteQuestion">Delete this question</button><br>
-      <button @click.prevent="goBack">Back</button><br>
+      <div class="d-flex flex-column gap-3">
+        <button @click.prevent="gotoUpdatePage">Go to update this question</button><br>
+        <button @click.prevent="deleteQuestion">Delete this question</button><br>
+        <button @click.prevent="goBack">Back</button><br>
+      </div>
     </table>
 </template>
 
