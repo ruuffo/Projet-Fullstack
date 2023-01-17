@@ -2,7 +2,7 @@
 
   <body>
     <div class="d-flex flex-column mainblock gap-3">
-      <h1>le Super QUIZ</h1>
+      <h1>Le Super QUIZ</h1>
     <div class="container">
       <h2>Top 10 des scores :</h2>
 

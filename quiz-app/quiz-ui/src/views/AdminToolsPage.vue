@@ -2,7 +2,7 @@
 
   <body>
     <div class="d-flex flex-column gap-3">
-      <h1>Adiminstrator Tools</h1>
+      <h1>Administrator Tools</h1>
       <div v-if="token != ''">
         <p>Choisissez une option :</p>
         <div class="d-flex flex-column gap-3">
